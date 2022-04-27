@@ -33,7 +33,7 @@ module.exports = {
       indexEvents,
       mergeEntities
     } = toolbox.parameters.options
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath(manifest)
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
 
