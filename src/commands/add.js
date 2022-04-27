@@ -41,6 +41,9 @@ module.exports = {
 
     console.log(manifest.result)
     // Show help text if requested
+    for (kek in manifest.result) {
+      console.log(kek)
+    }
     if (help || h) {
       print.info(HELP)
       return
