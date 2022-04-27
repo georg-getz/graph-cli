@@ -32,7 +32,7 @@ module.exports = {
       mergeEntities
     } = toolbox.parameters.options
 
-    let manifest = Subgraph.load('subgraph.yaml')
+    let manifest = Subgraph.load('subgraph.yaml', {name: 'mainnet'})
     console.log(manifest)
     // Show help text if requested
     if (help || h) {
