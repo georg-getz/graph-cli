@@ -4,6 +4,15 @@ const path = require('path')
 const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
 
+const addDatasource = async (kind, name, network, source, mapping) => {
+  return`  -kind: ${kind}
+    name: ${name}
+    network: ${network}
+    source: ${source}
+    mapping: ${mapping}
+`
+}
+
 const generateScaffold = async (
   {
     protocolInstance,
@@ -63,4 +72,5 @@ module.exports = {
   ...module.exports,
   generateScaffold,
   writeScaffold,
+  addDatasource
 }
