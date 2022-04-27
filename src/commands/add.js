@@ -42,7 +42,9 @@ module.exports = {
     console.log(manifest.result)
     // Show help text if requested
     for (kek in manifest.result._root.entries) {
-      console.log(kek)
+      for (mek in kek) {
+        console.log(mek)
+      }
     }
     if (help || h) {
       print.info(HELP)
