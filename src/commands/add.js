@@ -2,6 +2,8 @@ const chalk = require('chalk')
 const toolbox = require('gluegun/toolbox')
 const { withSpinner } = require('../command-helpers/spinner')
 const Subgraph = require('../subgraph')
+const Protocol = require('../protocols')
+const DataSourcesExtractor = require('../command-helpers/data-sources')
 const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
 
 const help = `
@@ -31,8 +33,11 @@ module.exports = {
       indexEvents,
       mergeEntities
     } = toolbox.parameters.options
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath(manifest)
 
-    let manifest = Subgraph.load('subgraph.yaml', {protocol: {name: 'mainnet'}})
+    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+
+    let manifest = Subgraph.load('subgraph.yaml', {protocol: protocol})
     console.log(manifest)
     // Show help text if requested
     if (help || h) {
