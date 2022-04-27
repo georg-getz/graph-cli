@@ -39,13 +39,9 @@ module.exports = {
 
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
 
-    console.log(manifest.result)
+    // console.log(manifest.result)
     // Show help text if requested
-    for (kek in manifest.result._root.entries) {
-      for (mek in kek) {
-        console.log(mek)
-      }
-    }
+    console.log(manifest.result.get('dataSources'))
     if (help || h) {
       print.info(HELP)
       return
