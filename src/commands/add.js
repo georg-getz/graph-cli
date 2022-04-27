@@ -38,7 +38,7 @@ module.exports = {
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
 
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    for (kek in manifest.result) {
+    for (kek in manifest.result.mapEntries) {
       console.log(kek)
     }
     // console.log(manifest)
