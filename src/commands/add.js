@@ -38,7 +38,10 @@ module.exports = {
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
 
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    console.log(manifest)
+    for (kek in manifest.result) {
+      console.log(kek)
+    }
+    // console.log(manifest)
     // Show help text if requested
     if (help || h) {
       print.info(HELP)
