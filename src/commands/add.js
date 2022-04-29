@@ -44,7 +44,7 @@ module.exports = {
     // Show help text if requested
     let ds = manifest.result.get('dataSources')
     console.log(ds)
-    manifest.result.get('dataSources').push(addDatadource(ds.get('kind'), 'PogO', 'mainnet', ds.get('source'), ds.get('mapping')))
+    manifest.result.get('dataSources').push(addDatasource(ds.get('kind'), 'PogO', 'mainnet', ds.get('source'), ds.get('mapping')))
     Subgraph.write(namifest, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     ds = manifest.result.get('dataSources')
