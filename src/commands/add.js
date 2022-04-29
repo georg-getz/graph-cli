@@ -6,6 +6,7 @@ const Protocol = require('../protocols')
 const DataSourcesExtractor = require('../command-helpers/data-sources')
 const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
 const { addDatasource } = require('../command-helpers/scaffold')
+const Compiler = require('../compiler')
 
 const help = `
 ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.yaml">]
@@ -45,7 +46,7 @@ module.exports = {
     let ds = manifest.result.get('dataSources')
     console.log(ds)
     manifest.result.get('dataSources').push(addDatasource(ds.get('kind'), 'PogO', 'mainnet', ds.get('source'), ds.get('mapping')))
-    let compiledSubgraph = await this.compileSubgraph(manifest)
+    let compiledSubgraph = await Compiler.compileSubgraph(manifest)
     Subgraph.write(compiledSubgraph, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     ds = manifest.result.get('dataSources')
