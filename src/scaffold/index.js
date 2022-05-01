@@ -66,7 +66,8 @@ specVersion: 0.0.1
 schema:
   file: ./schema.graphql
 dataSources:
-`.concat(addDatasource(this.protocol.name, this.contractName, this.network, protocolManifest.source(this), protocolManifest.mapping(this))),
+`.concat(addDatasource(this.protocol.name, this.contractName, this.network, 
+    protocolManifest.source(this), protocolManifest.mapping(this))),
       { parser: 'yaml' },
     )
   }
