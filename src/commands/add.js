@@ -48,7 +48,7 @@ module.exports = {
     // console.log(ds)
     console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
     let wat = Map.of(await addDatasource2(ds.get(0).get('kind').toString(), 
-      'PogO', 'mainnet', ds.get(0).get('source').toString(), ds.get(0).get('mapping')).toString().toJS())
+      'PogO', 'mainnet', ds.get(0).get('source').toString(), ds.get(0).get('mapping').toString()).toJS())
       console.log('wat ' + wat)
     manifest.result.get('dataSources').push(wat)
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
