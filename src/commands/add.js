@@ -47,8 +47,9 @@ module.exports = {
     let ds = manifest.result.get('dataSources')
     // console.log(ds)
     // console.log(ds.get('kind') + '\n' + ds.get('source') + '\n' + ds.get('mapping'))
-    manifest.result.get('dataSources').push(List.of(addDatasource(ds.get('kind'), 
-      'PogO', 'mainnet', ds.get('source'), ds.get('mapping'))).toJS())
+    let wat = List.of(addDatasource(ds.get('kind'), 
+    'PogO', 'mainnet', ds.get('source'), ds.get('mapping'))).toJS()
+    manifest.result.get('dataSources').push(wat)
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
     await Subgraph.write(manifest.result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
@@ -56,7 +57,6 @@ module.exports = {
     for (let [i, dataSource] of ds.entries()) {
       console.log(i + '\n' + dataSource)
     }
-    console.log(ds.entries())
     if (help || h) {
       print.info(HELP)
       return
