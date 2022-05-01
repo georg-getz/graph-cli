@@ -13,6 +13,16 @@ const addDatasource = async (kind, name, network, source, mapping) => {
 `
 }
 
+const addDatasource2 = async (kind, name, network, source, mapping) => {
+  return {
+    kind: kind,
+    name: name,
+    network: network,
+    source: source,
+    mapping: mapping
+  }
+}
+
 const generateScaffold = async (
   {
     protocolInstance,
@@ -72,5 +82,6 @@ module.exports = {
   ...module.exports,
   generateScaffold,
   writeScaffold,
-  addDatasource
+  addDatasource,
+  addDatasource2
 }
