@@ -51,7 +51,7 @@ module.exports = {
     await Subgraph.write(manifest.result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     ds = manifest.result.get('dataSources')
-    for (let [i, dataSource] of subgraph.get('dataSources').entries()) {
+    for (let [i, dataSource] of ds.entries()) {
       console.log(i + '\n' + dataSource)
     }
     console.log(ds.entries())
