@@ -7,7 +7,7 @@ const DataSourcesExtractor = require('../command-helpers/data-sources')
 const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
 const { addDatasource } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
-const { List } = require('immutable')
+const { Map } = require('immutable')
 
 const help = `
 ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.yaml">]
@@ -47,7 +47,7 @@ module.exports = {
     let ds = manifest.result.get('dataSources')
     // console.log(ds)
     // console.log(ds.get('kind') + '\n' + ds.get('source') + '\n' + ds.get('mapping'))
-    let wat = List.of(await addDatasource(ds.get('kind'), 
+    let wat = Map.of(await addDatasource(ds.get('kind'), 
       'PogO', 'mainnet', ds.get('source'), ds.get('mapping'))).toJS()
       console.log('wat ' + wat)
     manifest.result.get('dataSources').push(wat)
