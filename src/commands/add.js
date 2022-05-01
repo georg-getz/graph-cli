@@ -48,7 +48,8 @@ module.exports = {
     // console.log(ds)
     // console.log(ds.get('kind') + '\n' + ds.get('source') + '\n' + ds.get('mapping'))
     let wat = List.of(addDatasource(ds.get('kind'), 
-    'PogO', 'mainnet', ds.get('source'), ds.get('mapping'))).toJS()
+      'PogO', 'mainnet', ds.get('source'), ds.get('mapping'))).toJS()
+      console.log('wat ' + wat)
     manifest.result.get('dataSources').push(wat)
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
     await Subgraph.write(manifest.result, 'subgraph.yaml')
