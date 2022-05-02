@@ -51,7 +51,7 @@ module.exports = {
       'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
     // manifest.result.set('dataSources', manifest.result.get('dataSources').push(wat))
-    manifest.result.set('dataSources', 'wat')
+    manifest.result.set('dataSources', List())
     console.log('should have changes ' + manifest.result.get('dataSources'))
     // manifest.result.update()
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
