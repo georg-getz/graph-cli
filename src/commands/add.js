@@ -9,6 +9,7 @@ const { addDatasource2 } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
 const { loadAbiFromEtherscan } = require('./init')
+const EthereumABI = require('../protocols/ethereum/abi')
 
 const help = `
 ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.yaml">]
@@ -37,7 +38,7 @@ module.exports = {
       indexEvents,
       mergeEntities
     } = toolbox.parameters.options
-    let ethabi = await loadAbiFromEtherscan('Uniswap V2: ABI', 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
+    let ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
     console.log(ethabi)
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
