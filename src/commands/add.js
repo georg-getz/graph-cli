@@ -48,8 +48,8 @@ module.exports = {
     let ds = result.get('dataSources')
     // console.log(ds)
     // console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
-    let wat = await addDatasource2(ds.get(0).get('kind'), 
-      'PogO', 'mainnet', 'test', 'cccc').toJS()//ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
+    let wat = (await addDatasource2(ds.get(0).get('kind'), 
+      'PogO', 'mainnet', 'test', 'cccc')).toJS()//ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
     result.set('dataSources', manifest.result.get('dataSources').push(wat))
     // result.set('dataSources', List())
