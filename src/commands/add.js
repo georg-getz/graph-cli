@@ -52,6 +52,7 @@ module.exports = {
     console.log('wat ' + wat)
     // manifest.result.set('dataSources', manifest.result.get('dataSources').push(wat))
     manifest.result.set('dataSources', 'wat')
+    console.log('should have changes ' + manifest.result.get('dataSources'))
     // manifest.result.update()
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
     await Subgraph.write(manifest.result, 'subgraph.yaml')
