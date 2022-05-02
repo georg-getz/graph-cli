@@ -47,14 +47,12 @@ module.exports = {
     // Show help text if requested
     let ds = result.get('dataSources')
     // console.log(ds)
-    console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
-    console.log("asdadasd " + ds.get(0).get('source').toJS())
-    console.log("asdadasd " + ds.get(0).get('mapping').toJS())
-    let wat = List.of(await addDatasource2(ds.get(0).get('kind'), 
-      'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
+    // console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
+    let wat = Map.of(await addDatasource2(ds.get(0).get('kind'), 
+      'PogO', 'mainnet', 'test', 'cccc')).toJS()//ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
-    // manifest.result.set('dataSources', manifest.result.get('dataSources').push(wat))
-    result.set('dataSources', List())
+    result.set('dataSources', manifest.result.get('dataSources').push(wat))
+    // result.set('dataSources', List())
     console.log('should have changes ' + manifest.result.get('dataSources'))
     // manifest.result.update()
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
