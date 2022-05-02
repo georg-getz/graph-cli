@@ -48,7 +48,8 @@ module.exports = {
     let ds = result.get('dataSources')
     // console.log(ds)
     console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
-    console.log("asdadasd " + ds.get(0).get('source').isMap())
+    console.log("asdadasd " + ds.get(0).get('source').toJS())
+    console.log("asdadasd " + ds.get(0).get('mapping').toJS())
     let wat = List.of(await addDatasource2(ds.get(0).get('kind'), 
       'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
@@ -57,7 +58,7 @@ module.exports = {
     console.log('should have changes ' + manifest.result.get('dataSources'))
     // manifest.result.update()
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
-    await Subgraph.write(result, 'subgraph.yaml')
+    // await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     ds = manifest.result.get('dataSources')
     for (let [i, dataSource] of ds.entries()) {
