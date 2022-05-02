@@ -48,7 +48,7 @@ module.exports = {
     // console.log(ds)
     console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
     let wat = List.of(await addDatasource2(ds.get(0).get('kind'), 
-      'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
+      'PogO', 'mainnet', ds.get(0).get('source').toObject(), ds.get(0).get('mapping').toObject())).toJS()
     console.log('wat ' + wat)
     // manifest.result.set('dataSources', manifest.result.get('dataSources').push(wat))
     manifest.result.set('dataSources',Map.of('idk', 'wat'))
