@@ -51,7 +51,7 @@ module.exports = {
     let wat = (await addDatasource2(ds.get(0).get('kind'), 
       'PogO', 'mainnet', 'test', 'cccc'))//ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
-    result.set('dataSources', manifest.result.get('dataSources').push(wat))
+    result.set('dataSources', result.get('dataSources').push(wat))
     // result.set('dataSources', List())
     console.log('should have changes ' + manifest.result.get('dataSources'))
     // manifest.result.update()
