@@ -48,6 +48,7 @@ module.exports = {
     let ds = result.get('dataSources')
     // console.log(ds)
     console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
+    console.log("asdadasd " + ds.get(0).get('source').isMap())
     let wat = List.of(await addDatasource2(ds.get(0).get('kind'), 
       'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
