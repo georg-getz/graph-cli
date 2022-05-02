@@ -51,7 +51,7 @@ module.exports = {
       'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
     // manifest.result.set('dataSources', manifest.result.get('dataSources').push(wat))
-    manifest.result.set('dataSources',Map.of(['idk', 'wat']))
+    manifest.result.set('dataSources',Map.of('idk', 'wat'))
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
     await Subgraph.write(manifest.result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
