@@ -41,21 +41,22 @@ module.exports = {
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
 
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    let result = manifest.result.asMutable()
 
     // console.log(manifest.result)
     // Show help text if requested
-    let ds = manifest.result.get('dataSources')
+    let ds = result.get('dataSources')
     // console.log(ds)
     console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
     let wat = List.of(await addDatasource2(ds.get(0).get('kind'), 
       'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping'))).toJS()
     console.log('wat ' + wat)
     // manifest.result.set('dataSources', manifest.result.get('dataSources').push(wat))
-    manifest.result.set('dataSources', List())
+    result.set('dataSources', List())
     console.log('should have changes ' + manifest.result.get('dataSources'))
     // manifest.result.update()
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
-    await Subgraph.write(manifest.result, 'subgraph.yaml')
+    await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     ds = manifest.result.get('dataSources')
     for (let [i, dataSource] of ds.entries()) {
