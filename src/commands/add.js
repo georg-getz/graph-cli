@@ -56,7 +56,7 @@ module.exports = {
     console.log('should have changes ' + result.get('dataSources'))
     // manifest.result.update()
     // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
-    // await Subgraph.write(result, 'subgraph.yaml')
+    await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     ds = manifest.result.get('dataSources')
     for (let [i, dataSource] of ds.entries()) {
