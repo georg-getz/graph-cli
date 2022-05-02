@@ -8,6 +8,7 @@ const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
 const { addDatasource2 } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
+const { loadAbiFromEtherscan } = require('./init')
 
 const help = `
 ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.yaml">]
@@ -36,6 +37,8 @@ module.exports = {
       indexEvents,
       mergeEntities
     } = toolbox.parameters.options
+    let ethabi = await loadAbiFromEtherscan('Uniswap V2: ABI', 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
+    console.log(ethabi)
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
@@ -43,19 +46,11 @@ module.exports = {
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     let result = manifest.result.asMutable()
 
-    // console.log(manifest.result)
     // Show help text if requested
-    let ds = result.get('dataSources').asMutable()
-    // console.log(ds)
-    // console.log(ds.get(0).get('kind') + '\n' + ds.get(0).get('source') + '\n' + ds.get(0).get('mapping'))
+    let ds = result.get('dataSources')
     let wat = (await addDatasource2(ds.get(0).get('kind'), 
       'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping')))
-    console.log('wat ' + wat)
     result.set('dataSources', ds.push(wat))
-    // result.set('dataSources', List())
-    console.log('should have changes ' + result.get('dataSources'))
-    // manifest.result.update()
-    // let compiledSubgraph = await Compiler.compileSubgraph(manifest)
     await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     ds = manifest.result.get('dataSources')
