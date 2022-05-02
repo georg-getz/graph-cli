@@ -3,6 +3,7 @@ const path = require('path')
 
 const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
+const { Map } = require('immutable')
 
 const addDatasource = async (kind, name, network, source, mapping) => {
   return`  -kind: ${kind}
@@ -15,13 +16,13 @@ const addDatasource = async (kind, name, network, source, mapping) => {
 
 const addDatasource2 = async (kind, name, network, source, mapping) => {
   console.log("addD2 " + kind + '\n' + name + '\n' + network + '\n' + source + '\n' + mapping)
-  return [
+  return Map.of(
     'kind', kind,
     'name', name,
     'network', network,
     'source', source,
     'mapping', mapping
-  ]
+  )
 }
 
 const generateScaffold = async (
