@@ -1,5 +1,6 @@
 const fs = require('fs-extra')
 const path = require('path')
+const prettier = require('prettier')
 
 const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
