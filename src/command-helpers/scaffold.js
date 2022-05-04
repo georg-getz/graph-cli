@@ -4,7 +4,7 @@ const prettier = require('prettier')
 
 const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
-const { generateEventType } = require('../scaffold/schema')
+const { generateEventType, abiEvents } = require('../scaffold/schema')
 const { Map } = require('immutable')
 
 const addDatasource = async (kind, name, network, source, mapping) => {
