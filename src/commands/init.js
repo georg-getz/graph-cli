@@ -330,7 +330,7 @@ const loadAbiFromFile = async (ABI, filename) => {
 }
 
 module.exports = {
-  loadAbiFromEtherscan, //where put?
+  loadAbiFromEtherscan,
   description: 'Creates a new subgraph with basic scaffolding',
   options: {
     boolean: ['from-example'],

@@ -4,7 +4,7 @@ const { withSpinner } = require('../command-helpers/spinner')
 const Subgraph = require('../subgraph')
 const Protocol = require('../protocols')
 const DataSourcesExtractor = require('../command-helpers/data-sources')
-const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
+const { abiEvents, generateScaffold, writeScaffold, writeABI } = require('../scaffold')
 const { addDatasource2 } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
@@ -39,6 +39,7 @@ module.exports = {
       mergeEntities
     } = toolbox.parameters.options
     let ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
+    writeABI(ethabi, 'Spunk')
     console.log(ethabi)
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
