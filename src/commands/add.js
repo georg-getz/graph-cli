@@ -39,30 +39,29 @@ module.exports = {
       mergeEntities
     } = toolbox.parameters.options
     let ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
-    writeABI(ethabi, 'Spunk')
+    await writeABI(ethabi, 'Spunk')
     console.log(ethabi)
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+    // const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
-    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+    // let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
 
-    let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    let result = manifest.result.asMutable()
+    // let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    // let result = manifest.result.asMutable()
 
-    // Show help text if requested
-    let ds = result.get('dataSources')
-    let wat = (await addDatasource2(ds.get(0).get('kind'), 
-      'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping')))
-    result.set('dataSources', ds.push(wat))
-    await Subgraph.write(result, 'subgraph.yaml')
-    manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    ds = manifest.result.get('dataSources')
-    for (let [i, dataSource] of ds.entries()) {
-      console.log(i + '\n' + dataSource)
-    }
-    if (help || h) {
-      print.info(HELP)
-      return
-    }
+    // let ds = result.get('dataSources')
+    // let wat = (await addDatasource2(ds.get(0).get('kind'), 
+    //   'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping')))
+    // result.set('dataSources', ds.push(wat))
+    // await Subgraph.write(result, 'subgraph.yaml')
+    // manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    // ds = manifest.result.get('dataSources')
+    // for (let [i, dataSource] of ds.entries()) {
+    //   console.log(i + '\n' + dataSource)
+    // }
+    // if (help || h) {
+    //   print.info(HELP)
+    //   return
+    // }
 
     // // Detect git
     // let git = await system.which('git')

@@ -66,7 +66,7 @@ const writeABI = async (abi, contractName) => {
   let data = prettier.format(JSON.stringify(abi.data), {
     parser: 'json',
   })
-  fs.writeFile(`${__dirname}/abis/${contractName}.json`, data, { encoding: 'utf-8' })
+  await fs.writeFile(`${__dirname}/abis/${contractName}.json`, data, { encoding: 'utf-8' })
 }
 
 const writeScaffoldDirectory = async (scaffold, directory, spinner) => {
