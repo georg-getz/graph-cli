@@ -4,6 +4,7 @@ const prettier = require('prettier')
 
 const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
+const { generateEventType } = require('../scaffold/schema')
 const { Map } = require('immutable')
 
 const addDatasource = async (kind, name, network, source, mapping) => {
@@ -70,6 +71,21 @@ const writeABI = async (abi, contractName) => {
   await fs.writeFile(`./abis/${contractName}.json`, data, { encoding: 'utf-8' })
 }
 
+const writeSchema = async (abi, protocol) => {
+  const events = abiEvents(abi).toJS()
+
+  let data = prettier.format(
+    events.map(
+        event => generateEventType(event, protocol.name)
+      ).join('\n\n'),
+    {
+      parser: 'graphql',
+    },
+  )
+
+  await fs.appendFile('./schema.graphql', data, { encoding: 'utf-8' })
+}
+
 const writeScaffoldDirectory = async (scaffold, directory, spinner) => {
   // Create directory itself
   await fs.mkdirs(directory)
@@ -102,5 +118,6 @@ module.exports = {
   writeScaffold,
   addDatasource,
   addDatasource2,
-  writeABI
+  writeABI,
+  writeSchema
 }

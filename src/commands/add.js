@@ -5,7 +5,7 @@ const Subgraph = require('../subgraph')
 const Protocol = require('../protocols')
 const DataSourcesExtractor = require('../command-helpers/data-sources')
 const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
-const { addDatasource2, writeABI } = require('../command-helpers/scaffold')
+const { addDatasource2, writeABI, writeSchema } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
 const { loadAbiFromEtherscan } = require('./init')
@@ -38,12 +38,21 @@ module.exports = {
       indexEvents,
       mergeEntities
     } = toolbox.parameters.options
-    let ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
-    await writeABI(ethabi, 'Spunk')
-    console.log(ethabi)
-    // const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
-    // let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+    indexEvents = true
+    contractName = contractName ? contractName : 'Contract'
+    let ethabi = null
+    if (!abi) {
+      ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
+      await writeABI(ethabi, contractName)
+    }
+    console.log(ethabi)
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+
+    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+    if (indexEvents) {
+      writeSchema(ethabi, protocol)
+    }
 
     // let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     // let result = manifest.result.asMutable()
