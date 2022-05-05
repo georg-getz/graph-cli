@@ -67,10 +67,8 @@ module.exports = {
     let result = manifest.result.asMutable()
 
     let ds = result.get('dataSources')
-    let wat = prettier.format(await addDatasource2(protocol, 
-      contractName, 'mainnet', address, ethabi),
-      { parser: 'yaml' }
-    )
+    let wat = await addDatasource2(protocol, 
+      contractName, 'mainnet', address, ethabi)
     console.log('wat: ' + wat);
     result.set('dataSources', ds.push(wat))
     await Subgraph.write(result, 'subgraph.yaml')
