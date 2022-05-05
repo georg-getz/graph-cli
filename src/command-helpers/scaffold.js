@@ -105,7 +105,7 @@ const writeMapping = async (protocol, abi, contractName) => {
     { parser: 'typescript', semi: false },
   )
 
-  await fs.writeFile(`./src/${toKebabCase(contractName)}`, mapping, { encoding: 'utf-8' })
+  await fs.writeFile(`./src/${toKebabCase(contractName)}.ts`, mapping, { encoding: 'utf-8' })
 }
 
 const toKebabCase = (anyString) => {
