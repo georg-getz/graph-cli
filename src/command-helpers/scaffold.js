@@ -16,14 +16,15 @@ const addDatasource = async (kind, name, network, source, mapping) => {
 `
 }
 
-const addDatasource2 = async (kind, name, network, source, mapping) => {
-  console.log("addD2 " + kind + '\n' + name + '\n' + network + '\n' + source + '\n' + mapping)
+const addDatasource2 = async (protocol, contractName, network, contractAddress, abi) => {
+  const protocolManifest = protocol.getManifestScaffold()
+  // console.log("addD2 " + kind + '\n' + name + '\n' + network + '\n' + source + '\n' + mapping)
   return Map.of(
-    'kind', kind,
-    'name', name,
+    'kind', protocol.name,
+    'name', contractName,
     'network', network,
-    'source', source,
-    'mapping', mapping
+    'source', protocolManifest.source({contractAddress, contractName}),
+    'mapping', protocolManifest.mapping({abi, contractName})
   )
 }
 

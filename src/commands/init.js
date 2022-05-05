@@ -240,8 +240,8 @@ const processInitForm = async (
       skip: () => fromExample !== undefined,
       validate: value => value && value.length > 0,
       result: value => {
-        contractName = value;
-        return value;
+        contractName = value
+        return value
       }
     },
   ]

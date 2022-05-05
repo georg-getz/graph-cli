@@ -38,12 +38,20 @@ module.exports = {
       indexEvents,
       mergeEntities
     } = toolbox.parameters.options
+    let address = toolbox.parameters.first//0xC75650fe4D14017b1e12341A97721D5ec51D5340
+
+    // Validate the subgraph name
+    if (!address) {
+      print.error('No contract address provided')
+      process.exitCode = 1
+      return
+    }
 
     indexEvents = true
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
     if (!abi) {
-      ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', '0xC75650fe4D14017b1e12341A97721D5ec51D5340')
+      ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
       await writeABI(ethabi, contractName)
     }
     console.log(ethabi)
@@ -54,19 +62,19 @@ module.exports = {
       writeSchema(ethabi, protocol)
     }
 
-    // let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    // let result = manifest.result.asMutable()
+    let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    let result = manifest.result.asMutable()
 
-    // let ds = result.get('dataSources')
-    // let wat = (await addDatasource2(ds.get(0).get('kind'), 
-    //   'PogO', 'mainnet', ds.get(0).get('source'), ds.get(0).get('mapping')))
-    // result.set('dataSources', ds.push(wat))
-    // await Subgraph.write(result, 'subgraph.yaml')
-    // manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    // ds = manifest.result.get('dataSources')
-    // for (let [i, dataSource] of ds.entries()) {
-    //   console.log(i + '\n' + dataSource)
-    // }
+    let ds = result.get('dataSources')
+    let wat = (await addDatasource2(protocol, 
+      contractName, 'mainnet', address, ethabi))
+    result.set('dataSources', ds.push(wat))
+    await Subgraph.write(result, 'subgraph.yaml')
+    manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    ds = manifest.result.get('dataSources')
+    for (let [i, dataSource] of ds.entries()) {
+      console.log(i + '\n' + dataSource)
+    }
     // if (help || h) {
     //   print.info(HELP)
     //   return
