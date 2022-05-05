@@ -24,10 +24,10 @@ const addDatasource2 = async (protocol, contractName, network, contractAddress, 
     'kind', protocol.name,
     'name', contractName,
     'network', network,
-    'source', Map.of(prettier.format(protocolManifest.source({contract: contractAddress, contractName}),
-      {parser: 'yaml'})),
-    'mapping', Map.of(prettier.format(protocolManifest.mapping({abi, contractName}),
-      {parser: 'yaml'}))
+    'source', prettier.format(protocolManifest.source({contract: contractAddress, contractName}),
+      {parser: 'yaml'}),
+    'mapping', prettier.format(protocolManifest.mapping({abi, contractName}),
+      {parser: 'yaml'})
   )
 }
 
