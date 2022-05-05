@@ -9,7 +9,7 @@ const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
 const { addDatasource2, writeABI, writeSchema, writeMapping } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
-const { loadAbiFromEtherscan, runCodegen } = require('./init')
+const { loadAbiFromEtherscan } = require('./init')
 const EthereumABI = require('../protocols/ethereum/abi')
 
 const help = `
