@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const path = require('path')
 const prettier = require('prettier')
+const yaml = require('yaml')
 
 const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
@@ -24,10 +25,10 @@ const addDatasource2 = async (protocol, contractName, network, contractAddress, 
     'kind', protocol.name,
     'name', contractName,
     'network', network,
-    'source', prettier.format(protocolManifest.source({contract: contractAddress, contractName}),
-      {parser: 'yaml'}),
-    'mapping', prettier.format(protocolManifest.mapping({abi, contractName}),
-      {parser: 'yaml'})
+    'source', yaml.parse(prettier.format(protocolManifest.source({contract: contractAddress, contractName}),
+      {parser: 'yaml'})),
+    'mapping', yaml.parse(prettier.format(protocolManifest.mapping({abi, contractName}),
+      {parser: 'yaml'}))
   )
 }
 
