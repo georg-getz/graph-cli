@@ -1,12 +1,12 @@
 const { abiEvents } = require('../../../scaffold/schema')
 const ABI = require('../abi')
 
-const source = ({ contract, contractName }) => 
-      `address: '${contract}'
+const source = ({ contract, contractName }) => `
+      address: '${contract}'
       abi: ${contractName}`
 
-const mapping = ({ abi, contractName }) => 
-      `kind: ethereum/events
+const mapping = ({ abi, contractName }) => `
+      kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:

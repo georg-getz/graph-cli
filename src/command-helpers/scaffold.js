@@ -19,6 +19,7 @@ const addDatasource = async (kind, name, network, source, mapping) => {
 const addDatasource2 = async (protocol, contractName, network, contractAddress, abi) => {
   const protocolManifest = protocol.getManifestScaffold()
   // console.log("addD2 " + kind + '\n' + name + '\n' + network + '\n' + source + '\n' + mapping)
+  console.log('pretty? ' + prettier.format(protocolManifest.source({contract: contractAddress, contractName})))
   return Map.of(
     'kind', protocol.name,
     'name', contractName,
