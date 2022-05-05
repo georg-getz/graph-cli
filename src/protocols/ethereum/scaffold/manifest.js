@@ -1,4 +1,5 @@
 const { abiEvents } = require('../../../scaffold/schema')
+const { toKebabCase } = require('../../../command-helpers/scaffold')
 const ABI = require('../abi')
 
 const source = ({ contract, contractName }) => `
@@ -25,13 +26,6 @@ const mapping = ({ abi, contractName }) => `
           )
           .join('')}
       file: ./src/${toKebabCase(contractName)}.ts`
-
-const toKebabCase = (contractName) => {
-  return contractName
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-    .map(x => x.toLowerCase())
-    .join('-');
-}
 
 module.exports = {
   source,

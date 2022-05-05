@@ -5,6 +5,7 @@ const yaml = require('yaml')
 
 const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
+const { generateEventIndexingHandlers } = require('../scaffold/mapping')
 const { generateEventType, abiEvents } = require('../scaffold/schema')
 const { Map } = require('immutable')
 
@@ -77,7 +78,7 @@ const writeABI = async (abi, contractName) => {
 }
 
 const writeSchema = async (abi, protocol) => {
-  const events = abiEvents(abi).toJS()
+  const events = protocol.hasEvents() ? abiEvents(abi).toJS() : []
 
   let data = prettier.format(
     events.map(
@@ -89,6 +90,29 @@ const writeSchema = async (abi, protocol) => {
   )
 
   await fs.appendFile('./schema.graphql', data, { encoding: 'utf-8' })
+}
+
+const writeMapping = async (protocol, abi, contractName) => {
+  const events = protocol.hasEvents()
+    ? abiEvents(abi).toJS()
+    : []
+
+  let mapping = prettier.format(
+    generateEventIndexingHandlers(
+        events,
+        contractName,
+      ),
+    { parser: 'typescript', semi: false },
+  )
+
+  fs.writeFile(`./src/${toKebabCase(contractName)}`, mapping, { encoding: 'utf-8' })
+}
+
+const toKebabCase = (anyString) => {
+  return anyString
+    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+    .map(x => x.toLowerCase())
+    .join('-');
 }
 
 const writeScaffoldDirectory = async (scaffold, directory, spinner) => {
@@ -124,5 +148,7 @@ module.exports = {
   addDatasource,
   addDatasource2,
   writeABI,
-  writeSchema
+  writeSchema,
+  writeMapping,
+  toKebabCase
 }

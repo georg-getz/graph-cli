@@ -6,7 +6,7 @@ const Subgraph = require('../subgraph')
 const Protocol = require('../protocols')
 const DataSourcesExtractor = require('../command-helpers/data-sources')
 const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
-const { addDatasource2, writeABI, writeSchema } = require('../command-helpers/scaffold')
+const { addDatasource2, writeABI, writeSchema, writeMapping } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
 const { loadAbiFromEtherscan } = require('./init')
@@ -61,6 +61,7 @@ module.exports = {
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
     if (indexEvents) {
       writeSchema(ethabi, protocol)
+      writeMapping(protocol, ethabi, contractName)
     }
 
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
