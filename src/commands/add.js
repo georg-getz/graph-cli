@@ -67,6 +67,9 @@ module.exports = {
     let result = manifest.result.asMutable()
 
     let ds = result.get('dataSources')
+    for (let [i, dataSource] of ds.entries()) {
+      console.log(i + '\n' + dataSource)
+    }
     let wat = await addDatasource2(protocol, 
       contractName, 'mainnet', address, ethabi)
     console.log('wat: ' + wat);
