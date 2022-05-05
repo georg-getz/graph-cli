@@ -9,7 +9,7 @@ const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
 const { addDatasource2, writeABI, writeSchema, writeMapping } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
-const { loadAbiFromEtherscan } = require('./init')
+const { loadAbiFromEtherscan, runCodegen } = require('./init')
 const EthereumABI = require('../protocols/ethereum/abi')
 
 const help = `
@@ -41,7 +41,7 @@ module.exports = {
     } = toolbox.parameters.options
     let address = toolbox.parameters.first//0xC75650fe4D14017b1e12341A97721D5ec51D5340
 
-    // Validate the subgraph name
+    // Validate the address
     if (!address) {
       print.error('No contract address provided')
       process.exitCode = 1
@@ -68,9 +68,6 @@ module.exports = {
     let result = manifest.result.asMutable()
 
     let ds = result.get('dataSources')
-    for (let [i, dataSource] of ds.entries()) {
-      console.log(i + '\n' + dataSource)
-    }
     let wat = await addDatasource2(protocol, 
       contractName, 'mainnet', address, ethabi)
     console.log('wat: ' + wat);
@@ -81,6 +78,26 @@ module.exports = {
     for (let [i, dataSource] of ds.entries()) {
       console.log(i + '\n' + dataSource)
     }
+
+
+    // Detect Yarn and/or NPM
+    let yarn = await system.which('yarn')
+    let npm = await system.which('npm')
+    if (!yarn && !npm) {
+      print.error(
+        `Neither Yarn nor NPM were found on your system. Please install one of them.`,
+      )
+      process.exitCode = 1
+      return
+    }
+
+    await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
+    // Run code-generation
+    // let codegen = await runCodegen(toolbox, directory, commands.codegen)
+    // if (codegen !== true) {
+    //   process.exitCode = 1
+    //   return
+    // }
     // if (help || h) {
     //   print.info(HELP)
     //   return
