@@ -23,7 +23,7 @@ const addDatasource2 = async (protocol, contractName, network, contractAddress, 
     'kind', protocol.name,
     'name', contractName,
     'network', network,
-    'source', protocolManifest.source({contractAddress, contractName}),
+    'source', protocolManifest.source({contract: contractAddress, contractName}),
     'mapping', protocolManifest.mapping({abi, contractName})
   )
 }

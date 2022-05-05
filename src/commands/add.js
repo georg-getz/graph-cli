@@ -68,6 +68,7 @@ module.exports = {
     let ds = result.get('dataSources')
     let wat = (await addDatasource2(protocol, 
       contractName, 'mainnet', address, ethabi))
+    console.log('wat: ' + wat);
     result.set('dataSources', ds.push(wat))
     await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
