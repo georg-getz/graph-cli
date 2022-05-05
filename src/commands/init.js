@@ -331,7 +331,6 @@ const loadAbiFromFile = async (ABI, filename) => {
 
 module.exports = {
   loadAbiFromEtherscan,
-  runCodegen,
   description: 'Creates a new subgraph with basic scaffolding',
   options: {
     boolean: ['from-example'],
