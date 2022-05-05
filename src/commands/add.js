@@ -1,5 +1,6 @@
 const chalk = require('chalk')
 const toolbox = require('gluegun/toolbox')
+const prettier = require('prettier')
 const { withSpinner } = require('../command-helpers/spinner')
 const Subgraph = require('../subgraph')
 const Protocol = require('../protocols')
@@ -66,8 +67,10 @@ module.exports = {
     let result = manifest.result.asMutable()
 
     let ds = result.get('dataSources')
-    let wat = (await addDatasource2(protocol, 
-      contractName, 'mainnet', address, ethabi))
+    let wat = prettier.format(await addDatasource2(protocol, 
+      contractName, 'mainnet', address, ethabi),
+      { parser: 'yaml' }
+    )
     console.log('wat: ' + wat);
     result.set('dataSources', ds.push(wat))
     await Subgraph.write(result, 'subgraph.yaml')
