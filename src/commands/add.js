@@ -53,7 +53,7 @@ module.exports = {
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
     if (abi) {
-      ethabi = fs.readFile(abi, 'utf-8')
+      ethabi = await fs.readFile(abi, 'utf-8')
     }
     // if (!abi) {
     //   ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
