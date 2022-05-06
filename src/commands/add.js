@@ -54,48 +54,48 @@ module.exports = {
     let ethabi = null
     if (abi) {
       ethabi = await fs.readFile(abi, 'utf-8')
+    } else {
+      ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
+      await writeABI(ethabi, contractName)
     }
-    // if (!abi) {
-    //   ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
-    //   await writeABI(ethabi, contractName)
-    // }
+
     console.log(ethabi)
-    // const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
-    // let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
-    // if (indexEvents) {
-    //   writeSchema(ethabi, protocol)
-    //   writeMapping(protocol, ethabi, contractName)
-    // }
+    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+    if (indexEvents) {
+      writeSchema(ethabi, protocol)
+      writeMapping(protocol, ethabi, contractName)
+    }
 
-    // let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    // let result = manifest.result.asMutable()
+    let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    let result = manifest.result.asMutable()
 
-    // let ds = result.get('dataSources')
-    // let wat = await addDatasource2(protocol, 
-    //   contractName, 'mainnet', address, ethabi)
-    // console.log('wat: ' + wat);
-    // result.set('dataSources', ds.push(wat))
-    // await Subgraph.write(result, 'subgraph.yaml')
-    // manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    // ds = manifest.result.get('dataSources')
-    // for (let [i, dataSource] of ds.entries()) {
-    //   console.log(i + '\n' + dataSource)
-    // }
+    let ds = result.get('dataSources')
+    let wat = await addDatasource2(protocol, 
+      contractName, 'mainnet', address, ethabi)
+    console.log('wat: ' + wat);
+    result.set('dataSources', ds.push(wat))
+    await Subgraph.write(result, 'subgraph.yaml')
+    manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    ds = manifest.result.get('dataSources')
+    for (let [i, dataSource] of ds.entries()) {
+      console.log(i + '\n' + dataSource)
+    }
 
 
-    // // Detect Yarn and/or NPM
-    // let yarn = await system.which('yarn')
-    // let npm = await system.which('npm')
-    // if (!yarn && !npm) {
-    //   print.error(
-    //     `Neither Yarn nor NPM were found on your system. Please install one of them.`,
-    //   )
-    //   process.exitCode = 1
-    //   return
-    // }
+    // Detect Yarn and/or NPM
+    let yarn = await system.which('yarn')
+    let npm = await system.which('npm')
+    if (!yarn && !npm) {
+      print.error(
+        `Neither Yarn nor NPM were found on your system. Please install one of them.`,
+      )
+      process.exitCode = 1
+      return
+    }
 
-    // await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
+    await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
   }
 }
 
