@@ -1,5 +1,5 @@
 const chalk = require('chalk')
-const fs = require('fs')
+const fs = require('fs-extra')
 const toolbox = require('gluegun/toolbox')
 const prettier = require('prettier')
 const { withSpinner } = require('../command-helpers/spinner')
@@ -53,7 +53,7 @@ module.exports = {
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
     if (abi) {
-      ethabi = fs.readFile(abi, {encoding: 'utf-8'})
+      ethabi = fs.readFile(abi, 'utf-8')
     }
     // if (!abi) {
     //   ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
