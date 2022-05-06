@@ -1,4 +1,5 @@
 const chalk = require('chalk')
+const fs = require('fs')
 const toolbox = require('gluegun/toolbox')
 const prettier = require('prettier')
 const { withSpinner } = require('../command-helpers/spinner')
@@ -51,67 +52,37 @@ module.exports = {
     indexEvents = true
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
-    if (!abi) {
-      ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
-      await writeABI(ethabi, contractName)
+    if (abi) {
+      ethabi = fs.readFile(abi, {encoding: 'utf-8'})
     }
+    // if (!abi) {
+    //   ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
+    //   await writeABI(ethabi, contractName)
+    // }
     console.log(ethabi)
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+    // const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
-    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
-    if (indexEvents) {
-      writeSchema(ethabi, protocol)
-      writeMapping(protocol, ethabi, contractName)
-    }
-
-    let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    let result = manifest.result.asMutable()
-
-    let ds = result.get('dataSources')
-    let wat = await addDatasource2(protocol, 
-      contractName, 'mainnet', address, ethabi)
-    console.log('wat: ' + wat);
-    result.set('dataSources', ds.push(wat))
-    await Subgraph.write(result, 'subgraph.yaml')
-    manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    ds = manifest.result.get('dataSources')
-    for (let [i, dataSource] of ds.entries()) {
-      console.log(i + '\n' + dataSource)
-    }
-
-
-    // Detect Yarn and/or NPM
-    let yarn = await system.which('yarn')
-    let npm = await system.which('npm')
-    if (!yarn && !npm) {
-      print.error(
-        `Neither Yarn nor NPM were found on your system. Please install one of them.`,
-      )
-      process.exitCode = 1
-      return
-    }
-
-    await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
-    // Run code-generation
-    // let codegen = await runCodegen(toolbox, directory, commands.codegen)
-    // if (codegen !== true) {
-    //   process.exitCode = 1
-    //   return
-    // }
-    // if (help || h) {
-    //   print.info(HELP)
-    //   return
+    // let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+    // if (indexEvents) {
+    //   writeSchema(ethabi, protocol)
+    //   writeMapping(protocol, ethabi, contractName)
     // }
 
-    // // Detect git
-    // let git = await system.which('git')
-    // if (git === null) {
-    //   print.error(
-    //     `Git was not found on your system. Please install 'git' so it is in $PATH.`,
-    //   )
-    //   process.exitCode = 1
-    //   return
+    // let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    // let result = manifest.result.asMutable()
+
+    // let ds = result.get('dataSources')
+    // let wat = await addDatasource2(protocol, 
+    //   contractName, 'mainnet', address, ethabi)
+    // console.log('wat: ' + wat);
+    // result.set('dataSources', ds.push(wat))
+    // await Subgraph.write(result, 'subgraph.yaml')
+    // manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    // ds = manifest.result.get('dataSources')
+    // for (let [i, dataSource] of ds.entries()) {
+    //   console.log(i + '\n' + dataSource)
     // }
+
 
     // // Detect Yarn and/or NPM
     // let yarn = await system.which('yarn')
@@ -124,10 +95,7 @@ module.exports = {
     //   return
     // }
 
-    // let commands = {
-    //   install: yarn ? 'yarn' : 'npm install',
-    //   codegen: yarn ? 'yarn codegen' : 'npm run codegen',
-    // }
-  },
+    // await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
+  }
 }
 
