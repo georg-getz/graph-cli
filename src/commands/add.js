@@ -69,13 +69,13 @@ module.exports = {
     let ethabi = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
-      if (!mergeEntities) {
+      // if (!mergeEntities) {
         ethabi.data.filter(item => item.get('type') === 'event').map(event => {
-          console.log(event)
+          console.log('event' + event)
           event.set('name', contractName + event.get('name'))
         })
         await writeABI(ethabi, contractName, abi)
-      }
+      // }
       // ethabi = new EthereumABI(contractName, await JSON.parse(fs.readFile(abi, 'utf-8')))
     } else {
       ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
@@ -88,7 +88,6 @@ module.exports = {
       await writeABI(ethabi, contractName, undefined)
     }
 
-    console.log('data: ' + ethabi.data)
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
