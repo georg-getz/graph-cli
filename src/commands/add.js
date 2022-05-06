@@ -12,6 +12,7 @@ const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
 const { loadAbiFromEtherscan } = require('./init')
 const EthereumABI = require('../protocols/ethereum/abi')
+const { fixParameters } = require('../command-helpers/gluegun')
 
 const help = `
 ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.yaml">]
@@ -40,6 +41,7 @@ module.exports = {
       indexEvents,
       mergeEntities
     } = toolbox.parameters.options
+
     let address = toolbox.parameters.first//0xC75650fe4D14017b1e12341A97721D5ec51D5340
 
     // Validate the address
@@ -49,18 +51,44 @@ module.exports = {
       return
     }
 
+    try {
+      fixParameters(toolbox.parameters, {
+        h,
+        help,
+        indexEvents,
+        mergeEntities,
+      })
+    } catch (e) {
+      print.error(e.message)
+      process.exitCode = 1
+      return
+    }
+
     indexEvents = true
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
+      if (!mergeEntities) {
+        ethabi.data.filter(item => item.get('type') === 'event').map(event => {
+          console.log(event)
+          event.set('name', contractName + event.get('name'))
+        })
+        await writeABI(ethabi, contractName, abi)
+      }
       // ethabi = new EthereumABI(contractName, await JSON.parse(fs.readFile(abi, 'utf-8')))
     } else {
       ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
-      await writeABI(ethabi, contractName)
+      if (!mergeEntities) {
+        ethabi.data.filter(item => item.get('type') === 'event').map(event => {
+          console.log(event)
+          event.set('name', contractName + event.get('name'))
+        })
+      }
+      await writeABI(ethabi, contractName, undefined)
     }
 
-    console.log(ethabi)
+    console.log('data: ' + ethabi.data)
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)

@@ -20,8 +20,7 @@ const addDatasource = async (kind, name, network, source, mapping) => {
 
 const addDatasource2 = async (protocol, contractName, network, contractAddress, abi) => {
   const protocolManifest = protocol.getManifestScaffold()
-  // console.log("addD2 " + kind + '\n' + name + '\n' + network + '\n' + source + '\n' + mapping)
-  console.log('pretty? ' + prettier.format(protocolManifest.source({contract: contractAddress, contractName})))
+
   return Map.of(
     'kind', protocol.name,
     'name', contractName,
@@ -70,11 +69,13 @@ const addABIs = async (contractName, abi) => {
     }
 }
 
-const writeABI = async (abi, contractName) => {
+const writeABI = async (abi, contractName, abiPath) => {
   let data = prettier.format(JSON.stringify(abi.data), {
     parser: 'json',
   })
-  await fs.writeFile(`./abis/${contractName}.json`, data, { encoding: 'utf-8' })
+  let filePath = abiPath ? abiPath : `./abis/${contractName}.json`
+
+  await fs.writeFile(filePath, data, { encoding: 'utf-8' })
 }
 
 const writeSchema = async (abi, protocol) => {
