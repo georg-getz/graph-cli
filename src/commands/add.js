@@ -94,7 +94,7 @@ module.exports = {
       await writeABI(ethabi, contractName, undefined)
     }
 
-    if (indexEvents) {
+    if (indexEvents && !mergeEntities) {
       writeSchema(ethabi, protocol)
       writeMapping(protocol, ethabi, contractName)
     }
@@ -104,6 +104,13 @@ module.exports = {
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
+    if (mergeEntities) {
+      let mapping = dataSource.get('mapping')
+      console.log(mapping)
+      mapping.set('eventHandlers', [])
+      mapping.set('blockHandlers', [])
+      mapping.set('callHandlers', [])
+    }
     result.set('dataSources', dataSources.push(dataSource))
 
     await Subgraph.write(result, 'subgraph.yaml')
@@ -142,8 +149,10 @@ const getEntities = (manifest) => {
 const updateEventNamesOnCollision = (ethabi, entities, contractName) => {
   let abiData = ethabi.data.asMutable()
   let { print } = toolbox
+
   for (let i = 0; i < abiData.size; i++) {
     let dataRow = abiData.get(i).asMutable()
+    
     if (dataRow.get('type') === 'event' && entities.indexOf(dataRow.get('name')) !== -1) {
       if (entities.indexOf(contractName + dataRow.get('name')) !== -1) {
         print.error(`Contract name ('${contractName}') 
