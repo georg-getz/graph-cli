@@ -66,14 +66,22 @@ module.exports = {
     }
 
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml').toJS()
-    let list = []
-    console.log(dataSourcesAndTemplates)
-    for (let i = 0; i < dataSourcesAndTemplates.length; i++) {
-      let datasource = dataSourcesAndTemplates[i]
-      console.log('datasource: ' + datasource)
-      list.concat(datasource.mapping.entities)
 
-    }
+    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+
+    let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    let list = []
+    // for (let i = 0; i < dataSourcesAndTemplates.length; i++) {
+      // let datasource = dataSourcesAndTemplates[i]
+      // console.log('datasource: ' + datasource)
+      // list.concat(datasource.mapping.entities)
+      manifest.get('dataSources').map(dataSource => {
+        dataSource.getIn(['mapping', 'entities']).map(entity => {
+          console.log("entity " + entity)
+          list.push(entity)
+        })
+      })
+    // }
     console.log(list)
     console.log(dataSourcesAndTemplates)
     indexEvents = true
@@ -120,14 +128,10 @@ module.exports = {
       await writeABI(ethabi, contractName, undefined)
     }
 
-
-    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
     if (indexEvents) {
       writeSchema(ethabi, protocol)
       writeMapping(protocol, ethabi, contractName)
     }
-
-    let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     let result = manifest.result.asMutable()
 
     let ds = result.get('dataSources')
