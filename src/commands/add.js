@@ -68,7 +68,7 @@ module.exports = {
     let list = []
     console.log(dataSourcesAndTemplates.length)
     for (let i = 0; i < dataSourcesAndTemplates.length; i++) {
-      let datasource = dataSourcesAndTemplates.get(i)
+      let datasource = dataSourcesAndTemplates[i]
       console.log('datasource: ' + datasource)
       list.concat(datasource.get('mapping').get('entities'))
 
