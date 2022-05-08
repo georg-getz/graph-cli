@@ -78,7 +78,7 @@ module.exports = {
         //   console.log('after: ' + event.get('name'))
         //   return event
         // });
-        for (let i = 0; i < kek.size(); i++) {
+        for (let i = 0; i < kek.size; i++) {
           let lek = kek.get(i)
           console.log('lek: ' + lek)
           if (lek.get('type' === 'event')) {
