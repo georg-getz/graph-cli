@@ -2,6 +2,7 @@ const chalk = require('chalk')
 const fs = require('fs-extra')
 const toolbox = require('gluegun/toolbox')
 const prettier = require('prettier')
+const immutable = require('immutable')
 const { withSpinner } = require('../command-helpers/spinner')
 const Subgraph = require('../subgraph')
 const Protocol = require('../protocols')
@@ -64,9 +65,9 @@ module.exports = {
       return
     }
 
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml').toJS()
     let list = []
-    console.log(dataSourcesAndTemplates.length)
+    console.log(dataSourcesAndTemplates)
     for (let i = 0; i < dataSourcesAndTemplates.length; i++) {
       let datasource = dataSourcesAndTemplates[i]
       console.log('datasource: ' + datasource)
