@@ -78,7 +78,7 @@ module.exports = {
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
       if (!mergeEntities) {
-        ethabi.data = updateEventNamesOnCollision(ethabi, entities)
+        ethabi.data = updateEventNamesOnCollision(ethabi, entities, contractName)
         await writeABI(ethabi, contractName, abi)
       }
     } else {
@@ -89,7 +89,7 @@ module.exports = {
       }
 
       if (!mergeEntities) {
-        ethabi.data = updateEventNamesOnCollision(ethabi, entities)
+        ethabi.data = updateEventNamesOnCollision(ethabi, entities, contractName)
       }
       await writeABI(ethabi, contractName, undefined)
     }
@@ -105,6 +105,7 @@ module.exports = {
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
     result.set('dataSources', dataSources.push(dataSource))
+
     await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
 
@@ -138,7 +139,7 @@ const getEntities = (manifest) => {
   return list
 }
 
-const updateEventNamesOnCollision = (ethabi, entities) => {
+const updateEventNamesOnCollision = (ethabi, entities, contractName) => {
   let abiData = ethabi.data.asMutable()
   let { print } = toolbox
   for (let i = 0; i < abiData.size; i++) {
