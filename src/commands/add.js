@@ -79,12 +79,13 @@ module.exports = {
         //   return event
         // });
         for (let i = 0; i < kek.size; i++) {
-          let lek = kek.get(i)
+          let lek = kek.get(i).asMutable()
           console.log('lek: ' + lek)
           if (lek.get('type' === 'event')) {
             lek.set('name', contractName + lek.get('name'))
           }
           kek.set(i, lek)
+          ethabi.data = kek
         }
         console.log('\nkek: ' + kek.filter(item => item.get('type') === 'event'))
         // ethabi.data.asMutable().filter(item => item.get('type') === 'event').forEach(event => {
