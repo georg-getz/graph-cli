@@ -65,7 +65,7 @@ module.exports = {
       return
     }
 
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml').toJS()
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
 
