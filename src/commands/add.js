@@ -65,6 +65,11 @@ module.exports = {
     }
 
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+    let list = []
+    for (ds in dataSourcesAndTemplates) {
+      list.concat(ds.getIn(['mapping', 'entities']))
+    }
+    console.log(list)
     console.log(dataSourcesAndTemplates)
     indexEvents = true
     contractName = contractName ? contractName : 'Contract'
