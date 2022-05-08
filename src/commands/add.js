@@ -107,9 +107,15 @@ module.exports = {
     if (mergeEntities) {
       let mapping = dataSource.get('mapping')
       console.log(mapping)
-      mapping.set('eventHandlers', [])
-      mapping.set('blockHandlers', [])
-      mapping.set('callHandlers', [])
+      if (mapping.eventHandlers) {
+        mapping.eventHandlers = []
+      }
+      if (mapping.blockHandlers) {
+        mapping.blockHandlers = []
+      }
+      if (mapping.callHandlers) {
+        mapping.callHandlers = []
+      }
     }
     result.set('dataSources', dataSources.push(dataSource))
 
