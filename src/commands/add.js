@@ -81,7 +81,7 @@ module.exports = {
         //   event.set('name', contractName + event.get('name'))
         //   console.log('after: ' + event.get('name'))
         // })
-        console.log('\n\n\n' + ethabi.data)
+        console.log('\n\n\n' + ethabi.data.filter(item => item.get('type') === 'event'))
         await writeABI(ethabi, contractName, abi)
       // }
       // ethabi = new EthereumABI(contractName, await JSON.parse(fs.readFile(abi, 'utf-8')))
