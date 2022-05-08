@@ -70,65 +70,22 @@ module.exports = {
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
 
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    let list = []
-    // for (let i = 0; i < dataSourcesAndTemplates.length; i++) {
-      // let datasource = dataSourcesAndTemplates[i]
-      // console.log('datasource: ' + datasource)
-      // list.concat(datasource.mapping.entities)
-      manifest.result.get('dataSources').map(dataSource => {
-        dataSource.getIn(['mapping', 'entities']).map(entity => {
-          console.log("entity " + entity)
-          list.push(entity)
-        })
-      })
-      manifest.result.get('templates').map(dataSource => {
-        dataSource.getIn(['mapping', 'entities']).map(entity => {
-          console.log("entity " + entity)
-          list.push(entity)
-        })
-      })
-    // }
-    console.log(list)
+    let network = manifest.result.get('dataSources').get(0).get('network')
+    console.log(network)
+    let entities = getEntities(manifest)
+    console.log(entities)
     indexEvents = true
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
-      // if (!mergeEntities) {
-        let abiData = ethabi.data.asMutable()
-        // kek.filter(item => item.get('type') === 'event').map(event => {
-        //   event = event.asMutable()
-        //   console.log('event ' + contractName + event.get('name'))
-        //   event.set('name', contractName + event.get('name'))
-        //   console.log('after: ' + event.get('name'))
-        //   return event
-        // });
-        for (let i = 0; i < abiData.size; i++) {
-          let dataRow = abiData.get(i).asMutable()
-          if (dataRow.get('type') === 'event' && list.indexOf(dataRow.get('name')) !== -1) {
-            console.log('dataRow: ' + dataRow)
-            dataRow.set('name', contractName + dataRow.get('name'))
-          }
-          abiData.set(i, dataRow)
-          ethabi.data = abiData
-        }
-        console.log('\abiData: ' + abiData.filter(item => item.get('type') === 'event'))
-        // ethabi.data.asMutable().filter(item => item.get('type') === 'event').forEach(event => {
-        //   console.log('event ' + contractName + event.get('name'))
-        //   event.set('name', contractName + event.get('name'))
-        //   console.log('after: ' + event.get('name'))
-        // })
-        console.log('\n\n\n' + ethabi.data.filter(item => item.get('type') === 'event'))
-        await writeABI(ethabi, contractName, abi)
-      // }
-      // ethabi = new EthereumABI(contractName, await JSON.parse(fs.readFile(abi, 'utf-8')))
+      if (!mergeEntities) {
+        updateEventNamesOnCollision(ethabi, entities)
+      }
     } else {
       ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
       if (!mergeEntities) {
-        ethabi.data.filter(item => item.get('type') === 'event').map(event => {
-          console.log(event)
-          event.set('name', contractName + event.get('name'))
-        })
+        updateEventNamesOnCollision(ethabi, entities)
       }
       await writeABI(ethabi, contractName, undefined)
     }
@@ -142,15 +99,9 @@ module.exports = {
     let ds = result.get('dataSources')
     let wat = await addDatasource2(protocol, 
       contractName, 'mainnet', address, ethabi)
-    console.log('wat: ' + wat);
     result.set('dataSources', ds.push(wat))
     await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
-    ds = manifest.result.get('dataSources')
-    for (let [i, dataSource] of ds.entries()) {
-      console.log(i + '\n' + dataSource)
-    }
-
 
     // Detect Yarn and/or NPM
     let yarn = await system.which('yarn')
@@ -167,3 +118,33 @@ module.exports = {
   }
 }
 
+const getEntities = (manifest) => {
+  let list = []
+  manifest.result.get('dataSources').map(dataSource => {
+    dataSource.getIn(['mapping', 'entities']).map(entity => {
+      console.log("entity " + entity)
+      list.push(entity)
+    })
+  })
+  manifest.result.get('templates').map(dataSource => {
+    dataSource.getIn(['mapping', 'entities']).map(entity => {
+      console.log("entity " + entity)
+      list.push(entity)
+    })
+  })
+  return list
+}
+
+const updateEventNamesOnCollision = (ethabi, entities) => {
+  let abiData = ethabi.data.asMutable()
+  for (let i = 0; i < abiData.size; i++) {
+    let dataRow = abiData.get(i).asMutable()
+    if (dataRow.get('type') === 'event' && entities.indexOf(dataRow.get('name')) !== -1) {
+      console.log('dataRow: ' + dataRow)
+      dataRow.set('name', contractName + dataRow.get('name'))
+    }
+    abiData.set(i, dataRow)
+    ethabi.data = abiData
+  }
+  await writeABI(ethabi, contractName, abi)
+}
