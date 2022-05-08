@@ -8,10 +8,10 @@ const Subgraph = require('../subgraph')
 const Protocol = require('../protocols')
 const DataSourcesExtractor = require('../command-helpers/data-sources')
 const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
-const { addDatasource2, writeABI, writeSchema, writeMapping } = require('../command-helpers/scaffold')
+const { generateDataSource, writeABI, writeSchema, writeMapping } = require('../command-helpers/scaffold')
 const Compiler = require('../compiler')
 const { List, Map } = require('immutable')
-const { loadAbiFromEtherscan } = require('./init')
+const { loadAbiFromEtherscan, loadAbiFromBlockScout } = require('./init')
 const EthereumABI = require('../protocols/ethereum/abi')
 const { fixParameters } = require('../command-helpers/gluegun')
 
@@ -21,7 +21,7 @@ ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.ya
 ${chalk.dim('Options:')}
 
       --abi <path>              Path to the contract ABI (default: download from Etherscan)
-      --index-events            Index contract events as entities
+      --index-events            Index contract events as entities (default: true)
       --contract-name           Name of the contract (default: Contract)
       --merge-entities          Whether to merge entities with the same name (default: false)
   -h, --help                    Show usage information
@@ -43,7 +43,8 @@ module.exports = {
       mergeEntities
     } = toolbox.parameters.options
 
-    let address = toolbox.parameters.first//0xC75650fe4D14017b1e12341A97721D5ec51D5340
+    let address = toolbox.parameters.first
+    contractName = contractName ? contractName : 'Contract'
 
     // Validate the address
     if (!address) {
@@ -64,18 +65,15 @@ module.exports = {
       process.exitCode = 1
       return
     }
+    indexEvents = true //why not always true?   
 
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
-
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
-
     let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
     let network = manifest.result.get('dataSources').get(0).get('network')
-    console.log(network)
     let entities = getEntities(manifest)
+
     console.log(entities)
-    indexEvents = true
-    contractName = contractName ? contractName : 'Contract'
     let ethabi = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
@@ -84,7 +82,12 @@ module.exports = {
         await writeABI(ethabi, contractName, abi)
       }
     } else {
-      ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
+      if (network === 'poa-core') {
+        ethabi = await loadAbiFromBlockScout(EthereumABI, network, address)
+      } else {
+        ethabi = await loadAbiFromEtherscan(EthereumABI, network, address)
+      }
+
       if (!mergeEntities) {
         ethabi.data = updateEventNamesOnCollision(ethabi, entities)
       }
@@ -95,12 +98,13 @@ module.exports = {
       writeSchema(ethabi, protocol)
       writeMapping(protocol, ethabi, contractName)
     }
+
     let result = manifest.result.asMutable()
 
-    let ds = result.get('dataSources')
-    let wat = await addDatasource2(protocol, 
-      contractName, 'mainnet', address, ethabi)
-    result.set('dataSources', ds.push(wat))
+    let dataSources = result.get('dataSources')
+    let dataSource = await generateDataSource(protocol, 
+      contractName, network, address, ethabi)
+    result.set('dataSources', dataSources.push(dataSource))
     await Subgraph.write(result, 'subgraph.yaml')
     manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
 
@@ -123,13 +127,11 @@ const getEntities = (manifest) => {
   let list = []
   manifest.result.get('dataSources').map(dataSource => {
     dataSource.getIn(['mapping', 'entities']).map(entity => {
-      console.log("entity " + entity)
       list.push(entity)
     })
   })
   manifest.result.get('templates').map(dataSource => {
     dataSource.getIn(['mapping', 'entities']).map(entity => {
-      console.log("entity " + entity)
       list.push(entity)
     })
   })
@@ -138,10 +140,16 @@ const getEntities = (manifest) => {
 
 const updateEventNamesOnCollision = (ethabi, entities) => {
   let abiData = ethabi.data.asMutable()
+  let { print } = toolbox
   for (let i = 0; i < abiData.size; i++) {
     let dataRow = abiData.get(i).asMutable()
     if (dataRow.get('type') === 'event' && entities.indexOf(dataRow.get('name')) !== -1) {
-      console.log('dataRow: ' + dataRow)
+      if (entities.indexOf(contractName + dataRow.get('name')) !== -1) {
+        print.error(`Contract name ('${contractName}') 
+          + event name ('${dataRow.get('name')}') entity already exists.`)
+        process.exitCode = 1
+        return
+      }
       dataRow.set('name', contractName + dataRow.get('name'))
     }
     abiData.set(i, dataRow)

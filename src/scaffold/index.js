@@ -15,7 +15,6 @@ const {
 } = require('./schema')
 const { generateEventIndexingHandlers } = require('./mapping')
 const { getSubgraphBasename } = require('../command-helpers/subgraph')
-const { addDatasource } = require('../command-helpers/scaffold')
 
 module.exports = class Scaffold {
   constructor(options = {}) {
@@ -66,8 +65,12 @@ specVersion: 0.0.1
 schema:
   file: ./schema.graphql
 dataSources:
-`.concat(addDatasource(this.protocol.name, this.contractName, this.network, 
-    protocolManifest.source(this), protocolManifest.mapping(this))),
+- kind: ${this.protocol.name}
+  name: ${this.contractName}
+  network: ${this.network}
+  source: ${protocolManifest.source(this)}
+  mapping: ${protocolManifest.mapping(this)}
+`,
       { parser: 'yaml' },
     )
   }

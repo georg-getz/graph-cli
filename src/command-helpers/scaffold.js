@@ -9,16 +9,7 @@ const { generateEventIndexingHandlers } = require('../scaffold/mapping')
 const { generateEventType, abiEvents } = require('../scaffold/schema')
 const { Map } = require('immutable')
 
-const addDatasource = async (kind, name, network, source, mapping) => {
-  return`  -kind: ${kind}
-    name: ${name}
-    network: ${network}
-    source: ${source}
-    mapping: ${mapping}
-`
-}
-
-const addDatasource2 = async (protocol, contractName, network, contractAddress, abi) => {
+const generateDataSource = async (protocol, contractName, network, contractAddress, abi) => {
   const protocolManifest = protocol.getManifestScaffold()
 
   return Map.of(
@@ -146,8 +137,7 @@ module.exports = {
   ...module.exports,
   generateScaffold,
   writeScaffold,
-  addDatasource,
-  addDatasource2,
+  generateDataSource,
   writeABI,
   writeSchema,
   writeMapping,
