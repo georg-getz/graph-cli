@@ -64,6 +64,8 @@ module.exports = {
       return
     }
 
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+    console.log(dataSourcesAndTemplates)
     indexEvents = true
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
@@ -108,7 +110,6 @@ module.exports = {
       await writeABI(ethabi, contractName, undefined)
     }
 
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
 
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
     if (indexEvents) {
