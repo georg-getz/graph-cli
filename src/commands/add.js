@@ -75,7 +75,7 @@ module.exports = {
       // let datasource = dataSourcesAndTemplates[i]
       // console.log('datasource: ' + datasource)
       // list.concat(datasource.mapping.entities)
-      manifest.get('dataSources').map(dataSource => {
+      manifest.result.get('dataSources').map(dataSource => {
         dataSource.getIn(['mapping', 'entities']).map(entity => {
           console.log("entity " + entity)
           list.push(entity)
