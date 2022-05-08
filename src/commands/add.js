@@ -71,9 +71,11 @@ module.exports = {
       ethabi = EthereumABI.load(contractName, abi)
       // if (!mergeEntities) {
         ethabi.data.filter(item => item.get('type') === 'event').forEach(event => {
-          console.log('event' + event)
+          console.log('event ' + contractName + event.get('name'))
           event.set('name', contractName + event.get('name'))
+          console.log('after: ' + event.get('name'))
         })
+        console.log('\n\n\n' + abi)
         await writeABI(ethabi, contractName, abi)
       // }
       // ethabi = new EthereumABI(contractName, await JSON.parse(fs.readFile(abi, 'utf-8')))
