@@ -84,6 +84,7 @@ module.exports = {
           if (lek.get('type' === 'event')) {
             lek.set('name', contractName + lek.get('name'))
           }
+          kek.set(i, lek)
         }
         console.log('\nkek: ' + kek.filter(item => item.get('type') === 'event'))
         // ethabi.data.asMutable().filter(item => item.get('type') === 'event').forEach(event => {
