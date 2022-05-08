@@ -66,9 +66,11 @@ module.exports = {
 
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
     let list = []
-    for (let bs in dataSourcesAndTemplates) {
-      console.log('bs: ' + bs)
-      list.concat(bs.get('mapping').get('entities'))
+    for (let i = 0; i < dataSourcesAndTemplates.size; i++) {
+      let datasource = dataSourcesAndTemplates.get(i)
+      console.log('datasource: ' + datasource)
+      list.concat(datasource.get('mapping').get('entities'))
+
     }
     console.log(list)
     console.log(dataSourcesAndTemplates)
