@@ -80,7 +80,7 @@ module.exports = {
         // });
         for (let i = 0; i < kek.size; i++) {
           let lek = kek.get(i).asMutable()
-          if (lek.get('type' === 'event')) {
+          if (lek.get('type') === 'event') {
             console.log('lek: ' + lek)
             lek.set('name', contractName + lek.get('name'))
           }
