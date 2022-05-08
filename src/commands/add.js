@@ -81,16 +81,21 @@ module.exports = {
           list.push(entity)
         })
       })
+      manifest.result.get('templates').map(dataSource => {
+        dataSource.getIn(['mapping', 'entities']).map(entity => {
+          console.log("entity " + entity)
+          list.push(entity)
+        })
+      })
     // }
     console.log(list)
-    console.log(dataSourcesAndTemplates)
     indexEvents = true
     contractName = contractName ? contractName : 'Contract'
     let ethabi = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
       // if (!mergeEntities) {
-        let kek = ethabi.data.asMutable()
+        let abiData = ethabi.data.asMutable()
         // kek.filter(item => item.get('type') === 'event').map(event => {
         //   event = event.asMutable()
         //   console.log('event ' + contractName + event.get('name'))
@@ -98,16 +103,16 @@ module.exports = {
         //   console.log('after: ' + event.get('name'))
         //   return event
         // });
-        for (let i = 0; i < kek.size; i++) {
-          let lek = kek.get(i).asMutable()
-          if (lek.get('type') === 'event') {
-            console.log('lek: ' + lek)
-            lek.set('name', contractName + lek.get('name'))
+        for (let i = 0; i < abiData.size; i++) {
+          let dataRow = abiData.get(i).asMutable()
+          if (dataRow.get('type') === 'event' && list.find(dataRow.get('name'))) {
+            console.log('dataRow: ' + dataRow)
+            dataRow.set('name', contractName + dataRow.get('name'))
           }
-          kek.set(i, lek)
-          ethabi.data = kek
+          abiData.set(i, dataRow)
+          ethabi.data = abiData
         }
-        console.log('\nkek: ' + kek.filter(item => item.get('type') === 'event'))
+        console.log('\abiData: ' + abiData.filter(item => item.get('type') === 'event'))
         // ethabi.data.asMutable().filter(item => item.get('type') === 'event').forEach(event => {
         //   console.log('event ' + contractName + event.get('name'))
         //   event.set('name', contractName + event.get('name'))
