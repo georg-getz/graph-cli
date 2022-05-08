@@ -80,12 +80,13 @@ module.exports = {
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
       if (!mergeEntities) {
-        updateEventNamesOnCollision(ethabi, entities)
+        ethabi.data = updateEventNamesOnCollision(ethabi, entities)
+        await writeABI(ethabi, contractName, abi)
       }
     } else {
       ethabi = await loadAbiFromEtherscan(EthereumABI, 'mainnet', address)
       if (!mergeEntities) {
-        updateEventNamesOnCollision(ethabi, entities)
+        ethabi.data = updateEventNamesOnCollision(ethabi, entities)
       }
       await writeABI(ethabi, contractName, undefined)
     }
@@ -144,7 +145,6 @@ const updateEventNamesOnCollision = (ethabi, entities) => {
       dataRow.set('name', contractName + dataRow.get('name'))
     }
     abiData.set(i, dataRow)
-    ethabi.data = abiData
   }
-  await writeABI(ethabi, contractName, abi)
+  return abiData
 }
