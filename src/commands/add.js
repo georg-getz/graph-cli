@@ -72,6 +72,7 @@ module.exports = {
       // if (!mergeEntities) {
         let coll = ethabi.data.asMutable().filter(item => item.get('type') === 'event')
         coll.forEach(event => {
+          event = event.asMutable()
           console.log('event ' + contractName + event.get('name'))
           event.set('name', contractName + event.get('name'))
           console.log('after: ' + event.get('name'))
