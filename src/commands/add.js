@@ -70,7 +70,7 @@ module.exports = {
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
       // if (!mergeEntities) {
-        ethabi.data.filter(item => item.get('type') === 'event').map(event => {
+        ethabi.data.filter(item => item.get('type') === 'event').forEach(event => {
           console.log('event' + event)
           event.set('name', contractName + event.get('name'))
         })
