@@ -105,7 +105,7 @@ module.exports = {
         // });
         for (let i = 0; i < abiData.size; i++) {
           let dataRow = abiData.get(i).asMutable()
-          if (dataRow.get('type') === 'event' && list.indexOf(dataRow.get('name') !== -1)) {
+          if (dataRow.get('type') === 'event' && list.indexOf(dataRow.get('name')) !== -1) {
             console.log('dataRow: ' + dataRow)
             dataRow.set('name', contractName + dataRow.get('name'))
           }
