@@ -71,7 +71,7 @@ module.exports = {
       ethabi = EthereumABI.load(contractName, abi)
       // if (!mergeEntities) {
         let kek = ethabi.data.asMutable()
-        kek.filter(item => item.get('type') === 'event').map(event => {
+        kek.filter(item => item.get('type') === 'event').update(event => {
           event = event.asMutable()
           console.log('event ' + contractName + event.get('name'))
           event.update('name', contractName + event.get('name'))
