@@ -7,6 +7,7 @@ const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
 const { generateEventIndexingHandlers } = require('../scaffold/mapping')
 const { generateEventType, abiEvents } = require('../scaffold/schema')
+const { toKebabCase } = require('../codegen/util')
 const { Map } = require('immutable')
 
 const generateDataSource = async (protocol, contractName, network, contractAddress, abi) => {
@@ -51,14 +52,6 @@ const generateScaffold = async (
 
   return scaffold.generate()
 }
-  
-const addABIs = async (contractName, abi) => {
-  return {
-      [`${contractName}.json`]: prettier.format(JSON.stringify(abi.data), {
-        parser: 'json',
-      }),
-    }
-}
 
 const writeABI = async (abi, contractName, abiPath) => {
   let data = prettier.format(JSON.stringify(abi.data), {
@@ -69,7 +62,8 @@ const writeABI = async (abi, contractName, abiPath) => {
   await fs.writeFile(filePath, data, { encoding: 'utf-8' })
 }
 
-const writeSchema = async (abi, protocol) => {
+const writeSchema = async (abi, protocol, schemaPath) => {
+  console.log(schemaPath)
   const events = protocol.hasEvents() ? abiEvents(abi).toJS() : []
 
   let data = prettier.format(
@@ -81,7 +75,7 @@ const writeSchema = async (abi, protocol) => {
     },
   )
 
-  await fs.appendFile('./schema.graphql', data, { encoding: 'utf-8' })
+  await fs.appendFile(schemaPath, data, { encoding: 'utf-8' })
 }
 
 const writeMapping = async (protocol, abi, contractName) => {
@@ -98,13 +92,6 @@ const writeMapping = async (protocol, abi, contractName) => {
   )
 
   await fs.writeFile(`./src/${toKebabCase(contractName)}.ts`, mapping, { encoding: 'utf-8' })
-}
-
-const toKebabCase = (anyString) => {
-  return anyString
-    .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-    .map(x => x.toLowerCase())
-    .join('-');
 }
 
 const writeScaffoldDirectory = async (scaffold, directory, spinner) => {

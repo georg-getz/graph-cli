@@ -40,7 +40,6 @@ module.exports = {
 
     let address = toolbox.parameters.first
     let manifestPath = toolbox.parameters.second ? toolbox.parameters.second : './subgraph.yaml'
-    console.log(manifestPath + '\n' + toolbox.parameters)
     contractName = contractName ? contractName : 'Contract'
 
     // Validate the address
@@ -74,6 +73,7 @@ module.exports = {
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
     let manifest = await Subgraph.load(manifestPath, {protocol: protocol})
     let network = manifest.result.get('dataSources').get(0).get('network')
+    let result = manifest.result.asMutable()
 
     let entities = getEntities(manifest)
     let contractNames = getContractNames(manifest)
@@ -112,12 +112,11 @@ module.exports = {
 
     if (indexEvents) {
       if (!mergeEntities || !hasCollisions) {
-        writeSchema(ethabi, protocol)
+        writeSchema(ethabi, protocol, result.getIn(['schema', 'file']))
         writeMapping(protocol, ethabi, contractName)
       }
     }
 
-    let result = manifest.result.asMutable()
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
