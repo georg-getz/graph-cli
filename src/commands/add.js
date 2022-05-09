@@ -15,7 +15,7 @@ const { loadAbiFromEtherscan, loadAbiFromBlockScout } = require('./init')
 const EthereumABI = require('../protocols/ethereum/abi')
 const { fixParameters } = require('../command-helpers/gluegun')
 
-const help = `
+const HELP = `
 ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.yaml">]
 
 ${chalk.dim('Options:')}
