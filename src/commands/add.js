@@ -65,6 +65,12 @@ module.exports = {
       process.exitCode = 1
       return
     }
+
+    // Show help text if requested
+    if (help || h) {
+      print.info(HELP)
+      return
+    }
     indexEvents = true //why not always true?   
 
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
@@ -108,40 +114,18 @@ module.exports = {
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
+
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
-      // console.log('firstDs: ' + firstDataSource)
       let dsMapping = dataSource.get('mapping')
       let source = dataSource.get('source')
-      console.log(source + '\nSource^ mapping > ' + dsMapping)
       let mapping = firstDataSource.get('mapping').asMutable()
-      // let source = firstDataSource.get('source')
-      // console.log('ent: ' + dsMapping.entities + dsMapping.abi + firstDataSource.get('source').get('abi'))
+
       mapping.set('entities', dsMapping.entities)
       source.abi = firstDataSource.get('source').get('abi')
 
-
-      
-      // mapping.eventHandlers = []
-      // mapping.blockHandlers = []
-      // mapping.callHandlers = []
-
-      // // Make sure data source has at least 1 mapping
-      // console.log('ev: ' + firstDataSource.get('mapping').get('eventHandlers')
-      //             + '\nbl: ' + firstDataSource.get('mapping').get('blockHandlers')
-      //             + '\ncl: ' + firstDataSource.get('mapping').get('callHandlers'))
-      // if (firstDataSource.eventHandlers) {
-      //   mapping.eventHandlers = [firstDataSource.get('mapping').get('eventHandlers').get(0)]
-      // } else if (firstDataSource.blockHandlers) {
-      //   mapping.blockHandlers = [firstDataSource.get('mapping').get('blockHandlers').get(0)]
-      // } else {
-      //   mapping.callHandlers = [firstDataSource.get('mapping').get('callHandlers').get(0)]
-      // }
-
-      // mapping.file = firstDataSource.get('mapping').get('file')
       dataSource.set('mapping', mapping)
       dataSource.set('source', source)
-      console.log('mapping: ' + mapping + '\nds: ' + dataSource)
     }
 
     result.set('dataSources', dataSources.push(dataSource))
@@ -160,7 +144,14 @@ module.exports = {
       return
     }
 
-    await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
+    await withSpinner(
+      'Running codegen',
+      'Failed to run codegen',
+      'Warning during codegen',
+      async spinner => {
+        await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
+      }
+    )
   }
 }
 
