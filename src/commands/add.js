@@ -107,9 +107,11 @@ module.exports = {
       await writeABI(ethabi, contractName, undefined)
     }
 
-    if (indexEvents && !mergeEntities) {
-      writeSchema(ethabi, protocol)
-      writeMapping(protocol, ethabi, contractName)
+    if (indexEvents) {
+      if (!mergeEntities || !hasCollisions) {
+        writeSchema(ethabi, protocol)
+        writeMapping(protocol, ethabi, contractName)
+      }
     }
 
     let result = manifest.result.asMutable()
