@@ -108,9 +108,10 @@ module.exports = {
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
-    console.log(mergeEntities + hasCollisions)
+    console.log(dataSources)
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
+      console.log('firstDs: ' + firstDataSource)
       let mapping = dataSource.get('mapping')
       
       mapping.eventHandlers = []
