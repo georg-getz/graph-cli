@@ -78,10 +78,10 @@ module.exports = {
     let hasCollisions = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
+      let result = updateEventNamesOnCollision(ethabi, entities, contractName)
+      hasCollisions = result.hasCollisions
       if (!mergeEntities) {
-        let result = updateEventNamesOnCollision(ethabi, entities, contractName)
         ethabi.data = result.abiData
-        hasCollisions = result.hasCollisions
         await writeABI(ethabi, contractName, abi)
       }
     } else {
@@ -91,10 +91,10 @@ module.exports = {
         ethabi = await loadAbiFromEtherscan(EthereumABI, network, address)
       }
 
+      let result = updateEventNamesOnCollision(ethabi, entities, contractName)
+      hasCollisions = result.hasCollisions
       if (!mergeEntities) {
-        let result = updateEventNamesOnCollision(ethabi, entities, contractName)
         ethabi.data = result.abiData
-        hasCollisions = result.hasCollisions
       }
       await writeABI(ethabi, contractName, undefined)
     }
@@ -108,7 +108,7 @@ module.exports = {
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
-
+    console.log(mergeEntities + hasCollisions)
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
       let mapping = dataSource.get('mapping').asMutable()
