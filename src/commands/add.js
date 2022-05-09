@@ -75,10 +75,13 @@ module.exports = {
 
     console.log(entities)
     let ethabi = null
+    let hasCollisions = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
       if (!mergeEntities) {
-        ethabi.data = updateEventNamesOnCollision(ethabi, entities, contractName)
+        let result = updateEventNamesOnCollision(ethabi, entities, contractName)
+        ethabi.data = result.abiData
+        hasCollisions = result.hasCollisions
         await writeABI(ethabi, contractName, abi)
       }
     } else {
@@ -89,7 +92,9 @@ module.exports = {
       }
 
       if (!mergeEntities) {
-        ethabi.data = updateEventNamesOnCollision(ethabi, entities, contractName)
+        let result = updateEventNamesOnCollision(ethabi, entities, contractName)
+        ethabi.data = result.abiData
+        hasCollisions = result.hasCollisions
       }
       await writeABI(ethabi, contractName, undefined)
     }
@@ -100,23 +105,31 @@ module.exports = {
     }
 
     let result = manifest.result.asMutable()
-
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
-    if (mergeEntities) {
+
+    if (mergeEntities && hasCollisions) {
+      let firstDataSource = dataSources.get(0)
       let mapping = dataSource.get('mapping')
-      console.log(mapping)
-      if (mapping.eventHandlers) {
-        mapping.eventHandlers = []
+      
+      mapping.eventHandlers = []
+      mapping.blockHandlers = []
+      mapping.callHandlers = []
+
+      // Make sure data source has at least 1 mapping
+      if (firstDataSource.eventHandlers) {
+        mapping.eventHandlers = [firstDataSource.eventHandlers[0]]
+      } else if (firstDataSource.blockHandlers) {
+        mapping.blockHandlers = [firstDataSource.blockHandlers[0]]
+      } else {
+        mapping.callHandlers = [firstDataSource.callHandlers[0]]
       }
-      if (mapping.blockHandlers) {
-        mapping.blockHandlers = []
-      }
-      if (mapping.callHandlers) {
-        mapping.callHandlers = []
-      }
+
+      mapping.file = firstDataSource.file
+      dataSource.set('mapping', mapping)
     }
+
     result.set('dataSources', dataSources.push(dataSource))
 
     await Subgraph.write(result, 'subgraph.yaml')
@@ -155,6 +168,7 @@ const getEntities = (manifest) => {
 const updateEventNamesOnCollision = (ethabi, entities, contractName) => {
   let abiData = ethabi.data.asMutable()
   let { print } = toolbox
+  let hasCollisions = false
 
   for (let i = 0; i < abiData.size; i++) {
     let dataRow = abiData.get(i).asMutable()
@@ -166,9 +180,10 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName) => {
         process.exitCode = 1
         return
       }
+      hasCollisions = true
       dataRow.set('name', contractName + dataRow.get('name'))
     }
     abiData.set(i, dataRow)
   }
-  return abiData
+  return { abiData, hasCollisions}
 }
