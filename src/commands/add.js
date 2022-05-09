@@ -107,11 +107,11 @@ module.exports = {
     let result = manifest.result.asMutable()
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
-      contractName, network, address, ethabi)
+      contractName, network, address, ethabi).asMutable()
 
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
-      let mapping = dataSource.get('mapping')
+      let mapping = dataSource.get('mapping').asMutable()
       
       mapping.eventHandlers = []
       mapping.blockHandlers = []
