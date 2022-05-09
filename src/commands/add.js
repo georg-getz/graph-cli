@@ -113,7 +113,7 @@ module.exports = {
       let firstDataSource = dataSources.get(0)
       console.log('firstDs: ' + firstDataSource)
       let dsMapping = dataSource.get('mapping')
-      let mapping = firstDataSource.get('mapping')
+      let mapping = firstDataSource.get('mapping').asMutable()
       console.log('ent: ' + dsMapping.entities + dataSource.get('mapping'))
       mapping.set('entities', dsMapping.entities)
       
