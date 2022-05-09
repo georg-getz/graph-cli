@@ -108,15 +108,16 @@ module.exports = {
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
-    console.log(dataSources)
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
-      console.log('firstDs: ' + firstDataSource)
+      // console.log('firstDs: ' + firstDataSource)
       let dsMapping = dataSource.get('mapping')
       let source = dataSource.get('source')
+      console.log(source + '\nSource^ mapping > ' + dsMapping)
+      console.log(dataSource.source)
       let mapping = firstDataSource.get('mapping').asMutable()
       // let source = firstDataSource.get('source')
-      console.log('ent: ' + dsMapping.entities + dsMapping.abi + firstDataSource.get('source').get('abi'))
+      // console.log('ent: ' + dsMapping.entities + dsMapping.abi + firstDataSource.get('source').get('abi'))
       mapping.set('entities', dsMapping.entities)
       source.set('abi', firstDataSource.get('source').get('abi'))
 
