@@ -118,6 +118,9 @@ module.exports = {
       mapping.callHandlers = []
 
       // Make sure data source has at least 1 mapping
+      console.log('ev: ' + firstDataSource.eventHandlers
+                  + '\nbl: ' + firstDataSource.blockHandlers
+                  + '\ncl: ' + firstDataSource.callHandlers)
       if (firstDataSource.eventHandlers) {
         mapping.eventHandlers = [firstDataSource.eventHandlers[0]]
       } else if (firstDataSource.blockHandlers) {
