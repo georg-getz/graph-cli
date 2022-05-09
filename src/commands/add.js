@@ -113,9 +113,14 @@ module.exports = {
       let firstDataSource = dataSources.get(0)
       console.log('firstDs: ' + firstDataSource)
       let dsMapping = dataSource.get('mapping')
+      let source = dataSource.get('source')
       let mapping = firstDataSource.get('mapping').asMutable()
-      console.log('ent: ' + dsMapping.entities + dataSource.get('mapping'))
+      // let source = firstDataSource.get('source')
+      console.log('ent: ' + dsMapping.entities + dsMapping.abi + firstDataSource.get('source').get('abi'))
       mapping.set('entities', dsMapping.entities)
+      source.set('abi', firstDataSource.get('source').get('abi'))
+
+
       
       // mapping.eventHandlers = []
       // mapping.blockHandlers = []
@@ -135,6 +140,7 @@ module.exports = {
 
       // mapping.file = firstDataSource.get('mapping').get('file')
       dataSource.set('mapping', mapping)
+      dataSource.set('source', source)
       console.log('mapping: ' + mapping + '\nds: ' + dataSource)
     }
 
