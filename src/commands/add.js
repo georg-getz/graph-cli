@@ -44,6 +44,8 @@ module.exports = {
     } = toolbox.parameters.options
 
     let address = toolbox.parameters.first
+    let manifestPath = toolbox.parameters.second
+    console.log(manifestPath + '\n' + toolbox.parameters)
     contractName = contractName ? contractName : 'Contract'
 
     // Validate the address
@@ -121,6 +123,7 @@ module.exports = {
       let source = dataSource.get('source')
       let mapping = firstDataSource.get('mapping').asMutable()
 
+      // Save the entities and address of the new data source
       mapping.set('entities', dsMapping.entities)
       source.abi = firstDataSource.get('source').get('abi')
 
