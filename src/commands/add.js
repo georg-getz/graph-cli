@@ -112,25 +112,27 @@ module.exports = {
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
       console.log('firstDs: ' + firstDataSource)
-      let mapping = dataSource.get('mapping')
+      let dsMapping = dataSource.get('mapping')
+      let mapping = firstDataSource.get('mapping')
+      mapping.set('entities', dsMapping.entities)
       
-      mapping.eventHandlers = []
-      mapping.blockHandlers = []
-      mapping.callHandlers = []
+      // mapping.eventHandlers = []
+      // mapping.blockHandlers = []
+      // mapping.callHandlers = []
 
-      // Make sure data source has at least 1 mapping
-      console.log('ev: ' + firstDataSource.get('mapping').get('eventHandlers')
-                  + '\nbl: ' + firstDataSource.get('mapping').get('blockHandlers')
-                  + '\ncl: ' + firstDataSource.get('mapping').get('callHandlers'))
-      if (firstDataSource.eventHandlers) {
-        mapping.eventHandlers = [firstDataSource.get('mapping').get('eventHandlers').get(0)]
-      } else if (firstDataSource.blockHandlers) {
-        mapping.blockHandlers = [firstDataSource.get('mapping').get('blockHandlers').get(0)]
-      } else {
-        mapping.callHandlers = [firstDataSource.get('mapping').get('callHandlers').get(0)]
-      }
+      // // Make sure data source has at least 1 mapping
+      // console.log('ev: ' + firstDataSource.get('mapping').get('eventHandlers')
+      //             + '\nbl: ' + firstDataSource.get('mapping').get('blockHandlers')
+      //             + '\ncl: ' + firstDataSource.get('mapping').get('callHandlers'))
+      // if (firstDataSource.eventHandlers) {
+      //   mapping.eventHandlers = [firstDataSource.get('mapping').get('eventHandlers').get(0)]
+      // } else if (firstDataSource.blockHandlers) {
+      //   mapping.blockHandlers = [firstDataSource.get('mapping').get('blockHandlers').get(0)]
+      // } else {
+      //   mapping.callHandlers = [firstDataSource.get('mapping').get('callHandlers').get(0)]
+      // }
 
-      mapping.file = firstDataSource.get('mapping').get('file')
+      // mapping.file = firstDataSource.get('mapping').get('file')
       dataSource.set('mapping', mapping)
       console.log('mapping: ' + mapping + '\nds: ' + dataSource)
     }
