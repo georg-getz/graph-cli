@@ -111,7 +111,7 @@ module.exports = {
     console.log(mergeEntities + hasCollisions)
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
-      let mapping = dataSource.get('mapping').asMutable()
+      let mapping = dataSource.get('mapping')
       
       mapping.eventHandlers = []
       mapping.blockHandlers = []
