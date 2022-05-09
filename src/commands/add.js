@@ -1,16 +1,11 @@
 const chalk = require('chalk')
-const fs = require('fs-extra')
 const toolbox = require('gluegun/toolbox')
-const prettier = require('prettier')
 const immutable = require('immutable')
 const { withSpinner } = require('../command-helpers/spinner')
 const Subgraph = require('../subgraph')
 const Protocol = require('../protocols')
 const DataSourcesExtractor = require('../command-helpers/data-sources')
-const { abiEvents, generateScaffold, writeScaffold } = require('../scaffold')
 const { generateDataSource, writeABI, writeSchema, writeMapping } = require('../command-helpers/scaffold')
-const Compiler = require('../compiler')
-const { List, Map } = require('immutable')
 const { loadAbiFromEtherscan, loadAbiFromBlockScout } = require('./init')
 const EthereumABI = require('../protocols/ethereum/abi')
 const { fixParameters } = require('../command-helpers/gluegun')
@@ -79,7 +74,7 @@ module.exports = {
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
     let manifest = await Subgraph.load(manifestPath, {protocol: protocol})
     let network = manifest.result.get('dataSources').get(0).get('network')
-    
+
     let entities = getEntities(manifest)
     let contractNames = getContractNames(manifest)
     if (contractNames.indexOf(contractName) !== -1) {
