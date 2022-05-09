@@ -107,7 +107,7 @@ module.exports = {
     let result = manifest.result.asMutable()
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
-      contractName, network, address, ethabi).asMutable()
+      contractName, network, address, ethabi)
 
     if (mergeEntities && hasCollisions) {
       let firstDataSource = dataSources.get(0)
@@ -128,6 +128,7 @@ module.exports = {
 
       mapping.file = firstDataSource.file
       dataSource.set('mapping', mapping)
+      console.log('mapping: ' + mapping + '\nds: ' + dataSource)
     }
 
     result.set('dataSources', dataSources.push(dataSource))
