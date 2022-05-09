@@ -75,6 +75,12 @@ module.exports = {
     }
     indexEvents = true //why not always true?
 
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath(manifestPath)
+    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
+    let manifest = await Subgraph.load(manifestPath, {protocol: protocol})
+    let network = manifest.result.get('dataSources').get(0).get('network')
+    
+    let entities = getEntities(manifest)
     let contractNames = getContractNames(manifest)
     if (contractNames.indexOf(contractName) !== -1) {
       print.error(
@@ -83,11 +89,6 @@ module.exports = {
       process.exitCode = 1
       return
     }
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath(manifestPath)
-    let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
-    let manifest = await Subgraph.load(manifestPath, {protocol: protocol})
-    let network = manifest.result.get('dataSources').get(0).get('network')
-    let entities = getEntities(manifest)
 
     let ethabi = null
     let hasCollisions = null
