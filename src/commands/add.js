@@ -119,18 +119,18 @@ module.exports = {
       mapping.callHandlers = []
 
       // Make sure data source has at least 1 mapping
-      console.log('ev: ' + firstDataSource.eventHandlers
-                  + '\nbl: ' + firstDataSource.blockHandlers
-                  + '\ncl: ' + firstDataSource.callHandlers)
+      console.log('ev: ' + firstDataSource.get('eventHandlers')
+                  + '\nbl: ' + firstDataSource.get('blockHandlers')
+                  + '\ncl: ' + firstDataSource.get('callHandlers'))
       if (firstDataSource.eventHandlers) {
-        mapping.eventHandlers = [firstDataSource.eventHandlers[0]]
+        mapping.eventHandlers = [firstDataSource.get('eventHandlers').get(0)]
       } else if (firstDataSource.blockHandlers) {
-        mapping.blockHandlers = [firstDataSource.blockHandlers[0]]
+        mapping.blockHandlers = [firstDataSource.get('blockHandlers').get(0)]
       } else {
-        mapping.callHandlers = [firstDataSource.callHandlers[0]]
+        mapping.callHandlers = [firstDataSource.get('callHandlers').get(0)]
       }
 
-      mapping.file = firstDataSource.file
+      mapping.file = firstDataSource.get('file')
       dataSource.set('mapping', mapping)
       console.log('mapping: ' + mapping + '\nds: ' + dataSource)
     }
