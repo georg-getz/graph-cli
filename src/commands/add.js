@@ -44,7 +44,7 @@ module.exports = {
     } = toolbox.parameters.options
 
     let address = toolbox.parameters.first
-    let manifestPath = toolbox.parameters.second
+    let manifestPath = toolbox.parameters.second ? toolbox.parameters.second : './subgraph.yaml'
     console.log(manifestPath + '\n' + toolbox.parameters)
     contractName = contractName ? contractName : 'Contract'
 
@@ -75,9 +75,9 @@ module.exports = {
     }
     indexEvents = true //why not always true?   
 
-    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath('subgraph.yaml')
+    const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath(manifestPath)
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
-    let manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    let manifest = await Subgraph.load(manifestPath, {protocol: protocol})
     let network = manifest.result.get('dataSources').get(0).get('network')
     let entities = getEntities(manifest)
 
@@ -133,8 +133,8 @@ module.exports = {
 
     result.set('dataSources', dataSources.push(dataSource))
 
-    await Subgraph.write(result, 'subgraph.yaml')
-    manifest = await Subgraph.load('subgraph.yaml', {protocol: protocol})
+    await Subgraph.write(result, manifestPath)
+    manifest = await Subgraph.load(manifestPath, {protocol: protocol})
 
     // Detect Yarn and/or NPM
     let yarn = await system.which('yarn')
