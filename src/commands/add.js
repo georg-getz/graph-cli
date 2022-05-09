@@ -114,6 +114,7 @@ module.exports = {
       console.log('firstDs: ' + firstDataSource)
       let dsMapping = dataSource.get('mapping')
       let mapping = firstDataSource.get('mapping')
+      console.log('ent: ' + dsMapping.entities + dataSource.get('mapping'))
       mapping.set('entities', dsMapping.entities)
       
       // mapping.eventHandlers = []
