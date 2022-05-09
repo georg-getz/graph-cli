@@ -20,7 +20,7 @@ const generateDataSource = async (protocol, contractName, network, contractAddre
       {parser: 'yaml'})),
     'mapping', yaml.parse(prettier.format(protocolManifest.mapping({abi, contractName}),
       {parser: 'yaml'}))
-  )
+  ).asMutable()
 }
 
 const generateScaffold = async (
