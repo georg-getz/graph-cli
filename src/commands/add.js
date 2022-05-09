@@ -73,15 +73,22 @@ module.exports = {
       print.info(HELP)
       return
     }
-    indexEvents = true //why not always true?   
+    indexEvents = true //why not always true?
 
+    let contractNames = getContractNames(manifest)
+    if (contractNames.indexOf(contractName) !== -1) {
+      print.error(
+        `Datasource or template with name ${contractName} already exists, please choose a different name`,
+      )
+      process.exitCode = 1
+      return
+    }
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath(manifestPath)
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
     let manifest = await Subgraph.load(manifestPath, {protocol: protocol})
     let network = manifest.result.get('dataSources').get(0).get('network')
     let entities = getEntities(manifest)
 
-    console.log(entities)
     let ethabi = null
     let hasCollisions = null
     if (abi) {
@@ -167,10 +174,21 @@ const getEntities = (manifest) => {
       list.push(entity)
     })
   })
-  manifest.result.get('templates').map(dataSource => {
-    dataSource.getIn(['mapping', 'entities']).map(entity => {
+  manifest.result.get('templates').map(template => {
+    template.getIn(['mapping', 'entities']).map(entity => {
       list.push(entity)
     })
+  })
+  return list
+}
+
+const getContractNames = (manifest) => {
+  let list = []
+  manifest.result.get('dataSources').map(dataSource => {
+    list.push(dataSource.get('name'))
+  })
+  manifest.result.get('templates').map(template => {
+    list.push(template.get('name'))
   })
   return list
 }
