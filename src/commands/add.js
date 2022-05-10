@@ -121,12 +121,10 @@ module.exports = {
     console.log('onlyc: ' + onlyCollisions)
     if (mergeEntities && onlyCollisions) {
       let firstDataSource = dataSources.get(0)
-      let dsMapping = dataSource.get('mapping')
       let source = dataSource.get('source')
       let mapping = firstDataSource.get('mapping').asMutable()
 
-      // Save the entities and address of the new data source
-      mapping.set('entities', dsMapping.entities)
+      // Save the address of the new data source
       source.abi = firstDataSource.get('source').get('abi')
 
       dataSource.set('mapping', mapping)
@@ -216,7 +214,6 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         onlyCollisions = false
       }
     }
-    console.log(i)
     abiData.set(i, dataRow)
   }
   return { abiData, collisionEntities, onlyCollisions }
