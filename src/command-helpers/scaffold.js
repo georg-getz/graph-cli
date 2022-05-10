@@ -62,7 +62,7 @@ const writeABI = async (abi, contractName, abiPath) => {
   await fs.writeFile(filePath, data, { encoding: 'utf-8' })
 }
 
-const writeSchema = async (abi, protocol, schemaPath) => {
+const writeSchema = async (abi, protocol, schemaPath, entities) => {
   const events = protocol.hasEvents() ? abiEvents(abi).toJS() : []
   events.filter(event => entities.indexOf(event.get('name')) !== -1)
 
