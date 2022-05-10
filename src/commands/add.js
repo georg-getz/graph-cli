@@ -90,10 +90,10 @@ module.exports = {
       collisionEntities = result.collisionEntities
       onlyCollisions = result.onlyCollisions
 
-      if (!mergeEntities) {
+      // if (!mergeEntities) {
         ethabi.data = result.abiData
         await writeABI(ethabi, contractName, abi)
-      }
+      // }
     } else {
       if (network === 'poa-core') {
         ethabi = await loadAbiFromBlockScout(EthereumABI, network, address)
@@ -104,9 +104,9 @@ module.exports = {
       let result = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
       collisionEntities = result.collisionEntities
       onlyCollisions = result.onlyCollisions
-      if (!mergeEntities) {
+      // if (!mergeEntities) {
         ethabi.data = result.abiData
-      }
+      // }
       await writeABI(ethabi, contractName, undefined)
     }
     console.log(ethabi.data)
@@ -207,7 +207,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         if (mergeEntities) {
           console.log(dataRow.get('name'))
           collisionEntities.push(dataRow.get('name'))
-          abiData = abiData.delete(i)
+          abiData.delete(i)
           console.log('post del: ' + abiData)
           continue
         } else {
