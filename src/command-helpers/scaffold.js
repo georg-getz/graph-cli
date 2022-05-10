@@ -63,8 +63,8 @@ const writeABI = async (abi, contractName, abiPath) => {
 }
 
 const writeSchema = async (abi, protocol, schemaPath) => {
-  console.log(schemaPath)
   const events = protocol.hasEvents() ? abiEvents(abi).toJS() : []
+  events.filter(event => entities.indexOf(event.get('name')) !== -1)
 
   let data = prettier.format(
     events.map(
@@ -78,10 +78,13 @@ const writeSchema = async (abi, protocol, schemaPath) => {
   await fs.appendFile(schemaPath, data, { encoding: 'utf-8' })
 }
 
-const writeMapping = async (protocol, abi, contractName) => {
+const writeMapping = async (protocol, abi, contractName, entities) => {
   const events = protocol.hasEvents()
     ? abiEvents(abi).toJS()
     : []
+  console.log('events before: ' + events)
+  events.filter(event => entities.indexOf(event.get('name')) !== -1)
+  console.log('events after: ' + events)
 
   let mapping = prettier.format(
     generateEventIndexingHandlers(

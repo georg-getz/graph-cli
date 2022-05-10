@@ -1,5 +1,5 @@
 const { abiEvents } = require('../../../scaffold/schema')
-const { toKebabCase } = require('../../../command-helpers/scaffold')
+const { toKebabCase } = require('../../../codegen/util')
 const ABI = require('../abi')
 
 const source = ({ contract, contractName }) => `

@@ -16,7 +16,6 @@ ${chalk.bold('graph add')} <address> [<subgraph-manifest default: "./subgraph.ya
 ${chalk.dim('Options:')}
 
       --abi <path>              Path to the contract ABI (default: download from Etherscan)
-      --index-events            Index contract events as entities (default: true)
       --contract-name           Name of the contract (default: Contract)
       --merge-entities          Whether to merge entities with the same name (default: false)
   -h, --help                    Show usage information
@@ -34,7 +33,6 @@ module.exports = {
       contractName,
       h,
       help,
-      indexEvents,
       mergeEntities
     } = toolbox.parameters.options
 
@@ -53,7 +51,6 @@ module.exports = {
       fixParameters(toolbox.parameters, {
         h,
         help,
-        indexEvents,
         mergeEntities,
       })
     } catch (e) {
@@ -67,7 +64,6 @@ module.exports = {
       print.info(HELP)
       return
     }
-    indexEvents = true //why not always true?
 
     const dataSourcesAndTemplates = await DataSourcesExtractor.fromFilePath(manifestPath)
     let protocol = Protocol.fromDataSources(dataSourcesAndTemplates)
@@ -86,11 +82,12 @@ module.exports = {
     }
 
     let ethabi = null
-    let hasCollisions = null
+    let collisionEntities = []
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
-      let result = updateEventNamesOnCollision(ethabi, entities, contractName)
-      hasCollisions = result.hasCollisions
+      let result = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
+      collisionEntities = result.collisionEntities
+
       if (!mergeEntities) {
         ethabi.data = result.abiData
         await writeABI(ethabi, contractName, abi)
@@ -102,26 +99,26 @@ module.exports = {
         ethabi = await loadAbiFromEtherscan(EthereumABI, network, address)
       }
 
-      let result = updateEventNamesOnCollision(ethabi, entities, contractName)
-      hasCollisions = result.hasCollisions
+      let result = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
+      collisionEntities = result.collisionEntities
       if (!mergeEntities) {
         ethabi.data = result.abiData
       }
       await writeABI(ethabi, contractName, undefined)
     }
 
-    if (indexEvents) {
-      if (!mergeEntities || !hasCollisions) {
-        writeSchema(ethabi, protocol, result.getIn(['schema', 'file']))
-        writeMapping(protocol, ethabi, contractName)
-      }
-    }
+    console.log(collisionEntities)
+    writeSchema(ethabi, protocol, result.getIn(['schema', 'file']), collisionEntities)
+    writeMapping(protocol, ethabi, contractName, collisionEntities)
 
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
-
-    if (mergeEntities && hasCollisions) {
+    let onlyCollisions = collisionEntities.every(entity => {
+      return entities.indexOf(entity) !== -1
+    })
+    console.log('onlyc: ' + onlyCollisions)
+    if (mergeEntities && onlyCollisions) {
       let firstDataSource = dataSources.get(0)
       let dsMapping = dataSource.get('mapping')
       let source = dataSource.get('source')
@@ -156,7 +153,7 @@ module.exports = {
       'Failed to run codegen',
       'Warning during codegen',
       async spinner => {
-        await toolbox.system.run(yarn ? 'yarn codegen' : 'npm run codegen')
+        await system.run(yarn ? 'yarn codegen' : 'npm run codegen')
       }
     )
   }
@@ -188,14 +185,14 @@ const getContractNames = (manifest) => {
   return list
 }
 
-const updateEventNamesOnCollision = (ethabi, entities, contractName) => {
+const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntities) => {
   let abiData = ethabi.data.asMutable()
   let { print } = toolbox
-  let hasCollisions = false
+  let collisionEntities = []
 
   for (let i = 0; i < abiData.size; i++) {
     let dataRow = abiData.get(i).asMutable()
-    
+
     if (dataRow.get('type') === 'event' && entities.indexOf(dataRow.get('name')) !== -1) {
       if (entities.indexOf(contractName + dataRow.get('name')) !== -1) {
         print.error(`Contract name ('${contractName}') 
@@ -203,10 +200,15 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName) => {
         process.exitCode = 1
         return
       }
-      hasCollisions = true
-      dataRow.set('name', contractName + dataRow.get('name'))
+
+      
+      if (mergeEntities) {
+        collisionEntities.push(dataRow.get('name'))
+      } else {
+        dataRow.set('name', contractName + dataRow.get('name'))
+      }
     }
     abiData.set(i, dataRow)
   }
-  return { abiData, hasCollisions}
+  return { abiData, collisionEntities }
 }
