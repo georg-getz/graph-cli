@@ -109,6 +109,7 @@ module.exports = {
       }
       await writeABI(ethabi, contractName, undefined)
     }
+    console.log(ethabi.data)
 
     writeSchema(ethabi, protocol, result.getIn(['schema', 'file']), collisionEntities)
     writeMapping(ethabi, protocol, contractName, collisionEntities)
