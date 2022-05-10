@@ -82,43 +82,31 @@ module.exports = {
     }
 
     let ethabi = null
-    let collisionEntities = []
-    let onlyCollisions = false
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
-      let result = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
-      collisionEntities = result.collisionEntities
-      onlyCollisions = result.onlyCollisions
-
-      // if (!mergeEntities) {
-        ethabi.data = result.abiData
-        await writeABI(ethabi, contractName, abi)
-      // }
+      await writeABI(ethabi, contractName, abi)
     } else {
       if (network === 'poa-core') {
         ethabi = await loadAbiFromBlockScout(EthereumABI, network, address)
       } else {
         ethabi = await loadAbiFromEtherscan(EthereumABI, network, address)
       }
-
-      let result = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
-      collisionEntities = result.collisionEntities
-      onlyCollisions = result.onlyCollisions
-      // if (!mergeEntities) {
-        ethabi.data = result.abiData
-      // }
-      await writeABI(ethabi, contractName, undefined)
     }
-    console.log(ethabi.data)
 
-    writeSchema(ethabi, protocol, result.getIn(['schema', 'file']), collisionEntities)
-    writeMapping(ethabi, protocol, contractName, collisionEntities)
+    let updateResult = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
+    let collisionEntities = updateResult.collisionEntities
+    let onlyCollisions = updateResult.onlyCollisions
+    ethabi.data = updateResult.abiData
+
+    await writeABI(ethabi, contractName, abi)
+    await writeSchema(ethabi, protocol, result.getIn(['schema', 'file']), collisionEntities)
+    await writeMapping(ethabi, protocol, contractName, collisionEntities)
 
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
 
-    console.log('onlyc: ' + onlyCollisions)
+    // Handle the collisions edge case by copying another data source yaml data
     if (mergeEntities && onlyCollisions) {
       let firstDataSource = dataSources.get(0)
       let source = dataSource.get('source')
