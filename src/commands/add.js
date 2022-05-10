@@ -83,10 +83,12 @@ module.exports = {
 
     let ethabi = null
     let collisionEntities = []
+    let onlyCollisions = false
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
       let result = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
       collisionEntities = result.collisionEntities
+      onlyCollisions = result.onlyCollisions
 
       if (!mergeEntities) {
         ethabi.data = result.abiData
@@ -101,22 +103,20 @@ module.exports = {
 
       let result = updateEventNamesOnCollision(ethabi, entities, contractName, mergeEntities)
       collisionEntities = result.collisionEntities
+      onlyCollisions = result.onlyCollisions
       if (!mergeEntities) {
         ethabi.data = result.abiData
       }
       await writeABI(ethabi, contractName, undefined)
     }
 
-    console.log(collisionEntities)
     writeSchema(ethabi, protocol, result.getIn(['schema', 'file']), collisionEntities)
     writeMapping(protocol, ethabi, contractName, collisionEntities)
 
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
       contractName, network, address, ethabi)
-    let onlyCollisions = collisionEntities.every(entity => {
-      return entities.indexOf(entity) !== -1
-    })
+
     console.log('onlyc: ' + onlyCollisions)
     if (mergeEntities && onlyCollisions) {
       let firstDataSource = dataSources.get(0)
@@ -189,26 +189,30 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
   let abiData = ethabi.data.asMutable()
   let { print } = toolbox
   let collisionEntities = []
+  let onlyCollisions = true
 
   for (let i = 0; i < abiData.size; i++) {
     let dataRow = abiData.get(i).asMutable()
 
-    if (dataRow.get('type') === 'event' && entities.indexOf(dataRow.get('name')) !== -1) {
-      if (entities.indexOf(contractName + dataRow.get('name')) !== -1) {
-        print.error(`Contract name ('${contractName}') 
-          + event name ('${dataRow.get('name')}') entity already exists.`)
-        process.exitCode = 1
-        return
-      }
-
-      
-      if (mergeEntities) {
-        collisionEntities.push(dataRow.get('name'))
+    if (dataRow.get('type') === 'event'){
+      if (entities.indexOf(dataRow.get('name')) !== -1) {
+        if (entities.indexOf(contractName + dataRow.get('name')) !== -1) {
+          print.error(`Contract name ('${contractName}') 
+            + event name ('${dataRow.get('name')}') entity already exists.`)
+          process.exitCode = 1
+          return
+        }
+  
+        if (mergeEntities) {
+          collisionEntities.push(dataRow.get('name'))
+        } else {
+          dataRow.set('name', contractName + dataRow.get('name'))
+        }
       } else {
-        dataRow.set('name', contractName + dataRow.get('name'))
+        onlyCollisions = false
       }
     }
     abiData.set(i, dataRow)
   }
-  return { abiData, collisionEntities }
+  return { abiData, collisionEntities, onlyCollisions }
 }
