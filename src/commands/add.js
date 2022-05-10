@@ -207,9 +207,13 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         if (mergeEntities) {
           console.log(dataRow.get('name'))
           collisionEntities.push(dataRow.get('name'))
-          // abiData.delete(i)
-          abiData.set(i, immutable.Map.of())
+          //  abiData.delete(i)
+          let tempArr = abiData.toArray()
+          tempArr.splice(i, 1)
+          abiData = immutable.List.of(tempArr)
+          // abiData.set(i, immutable.Map.of())
           console.log('post del: ' + abiData)
+          i--
           continue
         } else {
           dataRow.set('name', contractName + dataRow.get('name'))
