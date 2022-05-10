@@ -194,7 +194,6 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
 
   for (let i = 0; i < abiData.size; i++) {
     let dataRow = abiData.get(i).asMutable()
-    console.log(i)
 
     if (dataRow.get('type') === 'event'){
       if (entities.indexOf(dataRow.get('name')) !== -1) {
@@ -208,8 +207,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         if (mergeEntities) {
           console.log(dataRow.get('name'))
           collisionEntities.push(dataRow.get('name'))
-          console.log('pre del: ' + abiData)
-          abiData.delete(i)
+          abiData = abiData.delete(i)
           console.log('post del: ' + abiData)
           continue
         } else {
@@ -219,6 +217,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         onlyCollisions = false
       }
     }
+    console.log(i)
     abiData.set(i, dataRow)
   }
   return { abiData, collisionEntities, onlyCollisions }
