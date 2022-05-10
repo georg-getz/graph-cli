@@ -205,8 +205,9 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         }
   
         if (mergeEntities) {
+          console.log(dataRow.get('name'))
           collisionEntities.push(dataRow.get('name'))
-          abiData.remove(i)
+          abiData.delete(i)
           continue
         } else {
           dataRow.set('name', contractName + dataRow.get('name'))
