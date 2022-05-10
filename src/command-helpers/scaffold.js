@@ -79,11 +79,10 @@ const writeSchema = async (abi, protocol, schemaPath, entities) => {
   await fs.appendFile(schemaPath, data, { encoding: 'utf-8' })
 }
 
-const writeMapping = async (protocol, abi, contractName, entities) => {
+const writeMapping = async (abi, protocol, contractName, entities) => {
   const events = protocol.hasEvents()
     ? abiEvents(abi).filter(event => entities.indexOf(event.get('name')) === -1).toJS()
     : []
-  console.log('events: ' + events)
 
   let mapping = prettier.format(
     generateEventIndexingHandlers(

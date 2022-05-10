@@ -111,7 +111,7 @@ module.exports = {
     }
 
     writeSchema(ethabi, protocol, result.getIn(['schema', 'file']), collisionEntities)
-    writeMapping(protocol, ethabi, contractName, collisionEntities)
+    writeMapping(ethabi, protocol, contractName, collisionEntities)
 
     let dataSources = result.get('dataSources')
     let dataSource = await generateDataSource(protocol, 
@@ -193,6 +193,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
 
   for (let i = 0; i < abiData.size; i++) {
     let dataRow = abiData.get(i).asMutable()
+    console.log(i)
 
     if (dataRow.get('type') === 'event'){
       if (entities.indexOf(dataRow.get('name')) !== -1) {
@@ -205,6 +206,8 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
   
         if (mergeEntities) {
           collisionEntities.push(dataRow.get('name'))
+          abiData.remove(i)
+          continue
         } else {
           dataRow.set('name', contractName + dataRow.get('name'))
         }
