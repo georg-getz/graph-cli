@@ -205,15 +205,9 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         }
   
         if (mergeEntities) {
-          console.log(dataRow.get('name'))
           collisionEntities.push(dataRow.get('name'))
-          //  abiData.delete(i)
-          let tempArr = abiData.toArray()
-          tempArr.splice(i, 1)
-          abiData = immutable.List.of(tempArr)
-          // abiData.set(i, immutable.Map.of())
-          console.log('post del: ' + abiData)
-          i--
+          // abiData.delete(i) is not currently possible, see https://github.com/immutable-js/immutable-js/issues/1901
+          abiData.set(i, immutable.Map.of())
           continue
         } else {
           dataRow.set('name', contractName + dataRow.get('name'))
