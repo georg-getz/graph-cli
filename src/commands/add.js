@@ -84,7 +84,6 @@ module.exports = {
     let ethabi = null
     if (abi) {
       ethabi = EthereumABI.load(contractName, abi)
-      await writeABI(ethabi, contractName, abi)
     } else {
       if (network === 'poa-core') {
         ethabi = await loadAbiFromBlockScout(EthereumABI, network, address)
@@ -204,5 +203,6 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
     }
     abiData.set(i, dataRow)
   }
+
   return { abiData, collisionEntities, onlyCollisions }
 }
