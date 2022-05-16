@@ -64,9 +64,9 @@ const writeABI = async (abi, contractName, abiPath) => {
 
 const writeSchema = async (abi, protocol, schemaPath, entities) => {
   const events = protocol.hasEvents()
-    ? abiEvents(abi).filter(event => entities.indexOf(event.get('name')) === -1)
+    ? abiEvents(abi).filter(event => entities.indexOf(event.get('name')) === -1).toJS()
     : []
-
+  
   let data = prettier.format(
     events.map(
         event => generateEventType(event, protocol.name)
