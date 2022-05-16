@@ -191,7 +191,9 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
   
         if (mergeEntities) {
           collisionEntities.push(dataRow.get('name'))
+          console.log(abiData.size)
           abiData.delete(0)// is not currently possible, see https://github.com/immutable-js/immutable-js/issues/1901
+          console.log(abiData.size)
           // abiData.set(i, immutable.Map.of())
           continue
         } else {
