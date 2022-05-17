@@ -142,35 +142,9 @@ module.exports = {
   }
 }
 
-// const getEntities = (manifest) => {
-//   let list = []
-//   manifest.result.get('dataSources').map(dataSource => {
-//     dataSource.getIn(['mapping', 'entities']).map(entity => {
-//       list.push(entity)
-//     })
-//   })
-//   manifest.result.get('templates').map(template => {
-//     template.getIn(['mapping', 'entities']).map(entity => {
-//       list.push(entity)
-//     })
-//   })
-//   return list
-// }
-
-// const getContractNames = (manifest) => {
-//   let list = []
-//   manifest.result.get('dataSources').map(dataSource => {
-//     list.push(dataSource.get('name'))
-//   })
-//   manifest.result.get('templates').map(template => {
-//     list.push(template.get('name'))
-//   })
-//   return list
-// }
-
 const getEntities = (manifest) => {
-  let dataSources = manifest.result.get('dataSources')
-  let templates = manifest.result.get('templates')
+  let dataSources = manifest.result.get('dataSources', immutable.List())
+  let templates = manifest.result.get('templates', immutable.List())
 
   return dataSources
     .concat(templates)
@@ -179,8 +153,8 @@ const getEntities = (manifest) => {
 }
 
 const getContractNames = (manifest) => {
-  let dataSources = manifest.result.get('dataSources')
-  let templates = manifest.result.get('templates')
+  let dataSources = manifest.result.get('dataSources', immutable.List())
+  let templates = manifest.result.get('templates', immutable.List())
 
   return dataSources
     .concat(templates)
