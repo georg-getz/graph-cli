@@ -178,6 +178,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
   let onlyCollisions = true
 
   for (let i = 0; i < abiData.size; i++) {
+    console.log('i' + i)
     let dataRow = abiData.get(i).asMutable()
 
     if (dataRow.get('type') === 'event'){
@@ -188,7 +189,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
           process.exitCode = 1
           return
         }
-  
+        
         if (mergeEntities) {
           collisionEntities.push(dataRow.get('name'))
           console.log(abiData.size)
@@ -205,7 +206,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         onlyCollisions = false
       }
     }
-    abiData.asMutable().set(i, dataRow)
+    abiData.withMutations(data => {data.set(i, dataRow)})
   }
 
   return { abiData, collisionEntities, onlyCollisions }
