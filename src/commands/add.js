@@ -178,8 +178,8 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
   let onlyCollisions = true
 
   for (let i = 0; i < abiData.size; i++) {
-    console.log('i' + i)
     let dataRow = abiData.get(i).asMutable()
+    console.log(dataRow.get('name'))
 
     if (dataRow.get('type') === 'event'){
       if (entities.indexOf(dataRow.get('name')) !== -1) {
