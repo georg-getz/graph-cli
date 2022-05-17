@@ -1,5 +1,6 @@
 const { withSpinner } = require('./spinner')
 const fetch = require('node-fetch')
+const immutable = require('immutable')
 
 const loadAbiFromEtherscan = async (ABI, network, address) =>
   await withSpinner(
