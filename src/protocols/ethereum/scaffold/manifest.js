@@ -1,5 +1,4 @@
 const { abiEvents } = require('../../../scaffold/schema')
-const { toKebabCase } = require('../../../codegen/util')
 const { strings } = require('gluegun')
 const ABI = require('../abi')
 

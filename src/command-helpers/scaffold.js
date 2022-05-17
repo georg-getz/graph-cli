@@ -7,7 +7,7 @@ const { step } = require('./spinner')
 const Scaffold = require('../scaffold')
 const { generateEventIndexingHandlers } = require('../scaffold/mapping')
 const { generateEventType, abiEvents } = require('../scaffold/schema')
-const { toKebabCase } = require('../codegen/util')
+const { strings } = require('gluegun')
 const { Map } = require('immutable')
 
 const generateDataSource = async (protocol, contractName, network, contractAddress, abi) => {
@@ -92,7 +92,7 @@ const writeMapping = async (abi, protocol, contractName, entities) => {
     { parser: 'typescript', semi: false },
   )
 
-  await fs.writeFile(`./src/${toKebabCase(contractName)}.ts`, mapping, { encoding: 'utf-8' })
+  await fs.writeFile(`./src/${strings.kebabCase(contractName)}.ts`, mapping, { encoding: 'utf-8' })
 }
 
 const writeScaffoldDirectory = async (scaffold, directory, spinner) => {

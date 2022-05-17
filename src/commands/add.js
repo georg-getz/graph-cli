@@ -172,7 +172,7 @@ const getContractNames = (manifest) => {
 }
 
 const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntities) => {
-  let abiData = ethabi.data
+  let abiData = ethabi.data.asMutable()
   let { print } = toolbox
   let collisionEntities = []
   let onlyCollisions = true
@@ -192,10 +192,12 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         if (mergeEntities) {
           collisionEntities.push(dataRow.get('name'))
           console.log(abiData.size)
+          console.log('eth ' + ethabi.data.size)
           // abiData.delete(i) is not currently possible, see https://github.com/immutable-js/immutable-js/issues/1901
           // abiData = ethabi.data.delete(i)
-          abiData.delete(i)
+          abiData = ethabi.data.delete(i)
           console.log(abiData.size)
+          console.log('eth ' + ethabi.data.size)
           // abiData.set(i, immutable.Map.of())
           continue
         } else {
