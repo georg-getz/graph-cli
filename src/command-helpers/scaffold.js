@@ -53,13 +53,12 @@ const generateScaffold = async (
   return scaffold.generate()
 }
 
-const writeABI = async (abi, contractName, abiPath) => {
+const writeABI = async (abi, contractName, abiPath = `./abis/${contractName}.json`) => {
   let data = prettier.format(JSON.stringify(abi.data), {
     parser: 'json',
   })
-  let filePath = abiPath ? abiPath : `./abis/${contractName}.json`
 
-  await fs.writeFile(filePath, data, { encoding: 'utf-8' })
+  await fs.writeFile(abiPath, data, { encoding: 'utf-8' })
 }
 
 const writeSchema = async (abi, protocol, schemaPath, entities) => {
