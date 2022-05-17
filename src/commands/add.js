@@ -206,7 +206,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
         onlyCollisions = false
       }
     }
-    abiData = abiData.asMutable().set(i, dataRow)//abiData.withMutations(data => {data.set(i, dataRow)})
+    abiData = abiData.asMutable().set(i, dataRow).asImmutable()//abiData.withMutations(data => {data.set(i, dataRow)})
   }
 
   return { abiData, collisionEntities, onlyCollisions }
