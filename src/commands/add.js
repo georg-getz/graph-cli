@@ -194,7 +194,7 @@ const updateEventNamesOnCollision = (ethabi, entities, contractName, mergeEntiti
           console.log(abiData.size)
           // abiData.delete(i) is not currently possible, see https://github.com/immutable-js/immutable-js/issues/1901
           // abiData = ethabi.data.delete(i)
-          abiData.delete(i)
+          abiData = abiData.delete(i)
           console.log(abiData.size)
           // abiData.set(i, immutable.Map.of())
           continue
